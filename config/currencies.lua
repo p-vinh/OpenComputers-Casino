@@ -14,10 +14,7 @@ addCurrency("Money",           "customnpcs:npcMoney",      0,   'INGOT', 0x85BB6
 addCurrency("Glowstone",        "minecraft:glowstone_dust", 0,   'DUST',  0xD0D000, 5)
 addCurrency("Iron ingot",  "minecraft:iron_ingot",     0,   'INGOT', 0xAAAAAA, nil)
 addCurrency("Iron block",    "minecraft:iron_block",     0,   'BLOCK', 0xAAAAAA, 6)
-addCurrency("Copper Ingot",    "IC2:itemIngot",            0,   'INGOT', 0xA5642F, nil)
 addCurrency("Copper Block",      "Forestry:resourceStorage", 1,   'BLOCK', 0xA5642F, 6)
-addCurrency("Tin Ingot", "IC2:itemIngot",            1,   'INGOT', 0xCCCCCC, nil)
-addCurrency("Tin Block",   "Forestry:resourceStorage", 2,   'BLOCK', 0xCCCCCC, 6)
 addCurrency("Free",        nil,                        nil, nil,     0xE5E5E5, nil)
 
 return currencies
