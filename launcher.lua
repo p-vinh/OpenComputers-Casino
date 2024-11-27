@@ -113,8 +113,8 @@ end
 local function drawCurrency(x, y, currency, current)
     buffer.drawRectangle(x, y, 46, 3, --[[current and 0xA890AA or--]] 0xE3E3E3, 0, " ")
     buffer.drawText(x + 8, y    , 0, currency.name)
-    buffer.drawText(x + 8, y + 1, 0, "Максимальная ставка: " .. (currency.max or "-"))
-    buffer.drawText(x + 8, y + 2, 0, "У казино: " .. casino.getCurrencyInStorage(currency) .. " шт.")
+    buffer.drawText(x + 8, y + 1, 0, "Maximum bet: " .. (currency.max or "-"))
+    buffer.drawText(x + 8, y + 2, 0, "At the casino: " .. casino.getCurrencyInStorage(currency) .. " pcs.")
 
     local color = currency.color or 0xE3E3E3
     local darkColor = colorlib.transition(color, 0, 0.1)
@@ -156,11 +156,11 @@ end
 local function drawLibSettings()
     buffer.drawRectangle(49, 6, 112, 45, 0xFFFFFF, 0, " ")
     for i = 1, #libs do
-        buffer.drawText(51, 5 + i * 2, 0x0000AA, "Скачать  Правка");
+        buffer.drawText(51, 5 + i * 2, 0x0000AA, "Download Edit");
         buffer.drawText(68, 5 + i * 2, 0, libs[i].path);
     end
-    buffer.drawText(51, 5 + (1 + #libs) * 2, 0xff0000, "При редактировании, компьютер не будет защищен от других игроков!");
-    buffer.drawText(51, 6 + (1 + #libs) * 2, 0xff0000, "Изменения вступят в силу после перезагрузки!");
+    buffer.drawText(51, 5 + (1 + #libs) * 2, 0xff0000, "When editing, the computer will not be protected from other players!");
+    buffer.drawText(51, 6 + (1 + #libs) * 2, 0xff0000, "Changes will take effect after reboot!");
     buffer.drawChanges()
 end
 
@@ -176,7 +176,7 @@ local function drawDynamic()
     casino.downloadFile(REPOSITORY .. "/resources/images/games_logo/" .. selection.image, gameImgPath)
     buffer.drawImage(51, 7, image.load(gameImgPath))  -- 50х32
     writeCenter(133, 7, selection.title, 0x000000)
-    drawBigText(102, 9, (selection.description or " ") .. "\n \n" .. "Разработчик: " .. selection.author)
+    drawBigText(102, 9, (selection.description or " ") .. "\n \n" .. "Developer: " .. selection.author)
 
     for i = 1, #games do
         local bgColor = selection == games[i] and 0xA890AA or 0xE3E3E3
@@ -190,17 +190,17 @@ local function drawDynamic()
             drawCurrency(2, 43 - 4 * (currencyLen - i), currencies[i], currencies[i] == currentCurrency)
         end
     end
-    drawRectangleWithCenterText(2, 46, 46, 1, "Текущая валюта", 0x431148, 0xFFFFFF)
+    drawRectangleWithCenterText(2, 46, 46, 1, "Current currency", 0x431148, 0xFFFFFF)
     drawCurrency(2, 47, currentCurrency)
-    buffer.drawText(40, 48, 0, "Сменить")
+    buffer.drawText(40, 48, 0, "Change")
 
     if (state.devMode) then
-        drawRectangleWithCenterText(51, 40, 50, 5, "Обновить", 0x431148, 0xffffff)
+        drawRectangleWithCenterText(51, 40, 50, 5, "Update", 0x431148, 0xffffff)
     else
         if selection.available then
-            drawRectangleWithCenterText(51, 40, 50, 5, "Играть", 0x431148, 0xffffff)
+            drawRectangleWithCenterText(51, 40, 50, 5, "Play", 0x431148, 0xffffff)
         else
-            drawRectangleWithCenterText(51, 40, 50, 5, "Временно недоступно", 0x433b44, 0xffffff)
+            drawRectangleWithCenterText(51, 40, 50, 5, "Temporarily unavailable", 0x433b44, 0xffffff)
         end
     end
     buffer.drawChanges()
@@ -232,7 +232,7 @@ local function handlePim()
                     frame = frame + 1
                     buffer.drawRectangle(1, 1, 32, 9, 0x000000, 0x0, ' ')
                     buffer.drawSemiPixelLine(frame * 3, 0, frame * 3 - 18, 18, 0xFFFFFF)
-                    buffer.drawText(5, 3, 0x00FFFF, 'Наступите, чтобы начать')
+                    buffer.drawText(5, 3, 0x00FFFF, 'Step on to start')
                     buffer.drawText(15, 6, 0x00FFFF, ' ||')
                     buffer.drawText(15, 7, 0x00FFFF, ' ||')
                     buffer.drawText(15, 8, 0x00FFFF, '\\  /')
@@ -251,7 +251,7 @@ local function handlePim()
         computer.addUser(casino.container.getInventoryName())
         buffer.drawRectangle(1, 1, 32, 9, 0xFFFFFF, 0x0, ' ')
         drawRectangleWithCenterText(1, 4, 32, 1, casino.container.getInventoryName(), 0xFFFFFF, 0x0)
-        buffer.drawText(2, 6, 0xFF0000, 'Не покидайте PIM до конца игры')
+        buffer.drawText(2, 6, 0xFF0000, 'Don\'t leave PIM until the end of the game')
         buffer.drawChanges()
         os.sleep(2)
         drawStatic()
@@ -319,7 +319,7 @@ while true do
         if (x >= 51 and y >= 40 and x <= 100 and y <= 44) and state.selection > 0 then
             local selection = games[state.selection]
             if state.devMode then
-                drawRectangleWithCenterText(51, 40, 50, 5, "Обновить", 0x5B5B5B, 0xffffff)
+                drawRectangleWithCenterText(51, 40, 50, 5, "Update", 0x5B5B5B, 0xffffff)
                 buffer.drawChanges()
                 casino.downloadFile(REPOSITORY .. "/resources/images/games_logo/" .. selection.image, "/home/images/games_logo/" .. selection.image, true)
                 casino.downloadFile(REPOSITORY .. "/apps/" .. selection.file, "/home/apps/" .. selection.file, true)
@@ -343,10 +343,10 @@ while true do
             local lib = libs[math.floor((y - 7) / 2) + 1]
             -- Download
             if lib and x >= 51 and x <= 57 then
-                buffer.drawText(51, y, 0xAAAAAA, "Скачать");
+                buffer.drawText(51, y, 0xAAAAAA, "Download");
                 buffer.drawChanges()
                 casino.downloadFile(lib.url, lib.path, true)
-                buffer.drawText(51, y, 0x0000AA, "Скачать");
+                buffer.drawText(51, y, 0x0000AA, "Download");
                 buffer.drawChanges()
             end
             -- Edit

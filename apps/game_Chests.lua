@@ -13,7 +13,7 @@ for i = 1, 14 do consoleLines[i] = "" end
 
 local function drawRightMenu()
     buffer.drawRectangle(67, 2, 21, 15, 0, 0, " ")
-    buffer.drawText(67, 2, 0xAAAAAA, "Вывод:")
+    buffer.drawText(67, 2, 0xAAAAAA, "Conclusion:")
     for i = 1, #consoleLines do
         buffer.drawText(67, 2 + i, (15 - #consoleLines + i) * 0x111111,
                         consoleLines[i])
@@ -62,7 +62,7 @@ local function gameEnd(chest)
     for i = 0, 8 do drawChestContent(i) end
     buffer.drawChanges()
     local reward = chests[chest]
-    message("Вы выиграли " .. reward)
+    message("You won " .. reward)
     casino.reward(reward)
     casino.gameIsOver()
     game = false
@@ -70,7 +70,7 @@ end
 
 local function gameStart()
     game = true
-    message("Началась игра за " .. BET_VALUES[bet])
+    message("The game has begun for " .. BET_VALUES[bet])
     -- В одном из сундуков может быть малая вероятность на джекпот и большая вероятность на 0 (для баланса)
     local jackpotChest = math.random(0, #chests)
 
@@ -100,9 +100,9 @@ local function drawStatic()
     buffer.drawRectangle(67, 29, 22, 1, 0xBFBFBF, 0, " ")
     buffer.drawRectangle(67, 26, 22, 3, 0xc7ffc6, 0, " ")
     buffer.drawRectangle(67, 30, 22, 3, 0xffc6c6, 0, " ")
-    buffer.drawText(74, 18, 0, 'Ставка')
-    buffer.drawText(75, 27, 0, 'Играть')
-    buffer.drawText(75, 31, 0, 'Выход')
+    buffer.drawText(74, 18, 0, 'Bid')
+    buffer.drawText(75, 27, 0, 'Play')
+    buffer.drawText(75, 31, 0, 'Exit')
     buffer.drawChanges()
 end
 
@@ -118,7 +118,7 @@ while true do
 
     if x >= 5 and x <= 62 and y >= 3 and y <= 31 then
         if not game then
-            message("Начните игру")
+            message("Start the game")
         else
             local chest = getChestId(x, y)
             if chest ~= nil then gameEnd(chest) end
@@ -128,7 +128,7 @@ while true do
     -- Right menu buttons
     if x >= 67 and x <= 87 then
         if game then
-            message("Выберите сундук")
+            message("Select chest")
         else
             -- Bet buttons
             if y >= 19 and y <= 24 then

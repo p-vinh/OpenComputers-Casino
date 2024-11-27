@@ -89,7 +89,7 @@ casino.takeMoney = function(money)
     end
 
     if CURRENCY.max and currentBetSize + money > CURRENCY.max then
-        return false, "Превышен максимум"
+        return false, "Maximum exceeded"
     end
 
     local sum = 0
@@ -101,7 +101,7 @@ casino.takeMoney = function(money)
     end
     if sum < money then
         casino.reward(sum)
-        return false, "Нужно " .. CURRENCY.name .. " x" .. money
+        return false, "Need to " .. CURRENCY.name .. " x" .. money
     end
     currentBetSize = currentBetSize + money
     return true

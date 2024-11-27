@@ -139,17 +139,17 @@ function setGame(status)
     if (game) then
         gpu.setBackground(0xd69b8b)
         gpu.fill(81, 33, 34, 5, " ")
-        gpu.set(98 - math.floor((12 + string.len(player)) / 2), 35, "Идёт игра у " .. player)
-        Log(player .. " начал игру")
+        gpu.set(98 - math.floor((12 + string.len(player)) / 2), 35, "There's a game going on " .. player)
+        Log(player .. " started the game")
     else
         gpu.setBackground(0x90ee90)
         gpu.fill(81, 33, 34, 5, " ")
-        gpu.set(95, 35, "Играть")
+        gpu.set(95, 35, "Play")
     end
     gpu.setBackground(0x990000)
     gpu.setForeground(0xFFFFFF)
     gpu.fill(81, 27, 34, 5, " ")
-    gpu.set(95, 29, "Выход")
+    gpu.set(95, 29, "Exit")
     gpu.setForeground(0x000000)
 end
 local loglist = { "", "", "", "", "", "", "", "", "", "", "" }
@@ -165,11 +165,11 @@ end
 function drag(left, top)
     local x, y = math.floor((left - 3) / 2), (top - 2)
     if (x < 1) or (x > 35) or (y < 1) or (y > 35) then
-        lose("ушёл за поле")
+        lose("went off the field")      -- may need to change this
         return
     end
     if (map[x][y] == 0) then
-        lose("задел край")
+        lose("touched the edge")
     end
     if (x == finish[1]) and (y == finish[2]) then
         win()
@@ -182,10 +182,10 @@ function drawPoint(x, y, color)
     gpu.fill(3 + x * 2, 2 + y, 2, 1, " ")
     if (game) then
         if math.abs(x - lastx) > 2 then
-            lose("поторопился")
+            lose("hurry up")
         end
         if math.abs(y - lasty) > 2 then
-            lose("поторопился")
+            lose("hurry up")
         end
     end
 
@@ -230,7 +230,7 @@ function win()
     dragging = false
     setGame(false)
     casino.reward(1)
-    Log(player .. " победил. : ")
+    Log(player .. " won. : ")
 end
 
 gpu.setResolution(118, 39)
@@ -243,20 +243,20 @@ gpu.setBackground(0xdddddd)
 gpu.fill(81, 17, 34, 9, " ")
 gpu.setBackground(0xffffff)
 gpu.setForeground(0x0000ff)
-gpu.set(80, 2, "Правила игры:")
-gpu.set(80, 11, "Цена и награда:")
+gpu.set(80, 2, "Rules of the game:")
+gpu.set(80, 11, "Price and reward:")
 gpu.setForeground(0xaaaaaa)
-gpu.set(80, 3, "Необходимо добраться с левой точки")
-gpu.set(80, 4, "до правой через лабиринт. Время")
-gpu.set(80, 5, "ограничено 60-ю секундами.")
-gpu.set(80, 6, " - Нельзя отпускать мышь")
-gpu.set(80, 7, ' - Нельзя "телепортироваться"')
-gpu.set(80, 8, " - Нельзя задевать стены")
-gpu.set(80, 9, " - Нельзя выходить за поле")
-gpu.set(80, 12, "Игра абсолютно БЕСПЛАТНАЯ.")
-gpu.set(80, 13, "В случае успеха, награда 1 эм.")
-gpu.set(80, 14, "Независимо от исхода игры, кулдаун")
-gpu.set(80, 15, "игры одна серверная минута.")
+gpu.set(80, 3, "Need to get there from the left point")
+gpu.set(80, 4, "to the right through the maze. Time")
+gpu.set(80, 5, "limited to 60 seconds.")
+gpu.set(80, 6, " - Can't let go of the mouse")
+gpu.set(80, 7, ' - You can\'t teleport')
+gpu.set(80, 8, " - You can't touch the walls")
+gpu.set(80, 9, " - You can't leave the field")
+gpu.set(80, 12, "The game is absolutely FREE.")
+gpu.set(80, 13, "If successful, reward 1 em.")
+gpu.set(80, 14, "Regardless of the outcome of the game, cooldown")
+gpu.set(80, 15, "games one server minute.")
 function emptyarray()
     local arr = {}
     for i = 1, 36 do
@@ -277,7 +277,7 @@ while true do
     while (cooldown - os.time()) >= 0 do
         gpu.setBackground(0xaaaaaa)
         gpu.fill(81, 33, 34, 5, " ")
-        gpu.set(91, 35, "Кулдаун " .. math.floor((cooldown - os.time()) / 72) .. " с.")
+        gpu.set(91, 35, "Cooldown " .. math.floor((cooldown - os.time()) / 72) .. " с.")
         local e, _, left, top, _, p = event.pull(1, "touch")
         if e and (left > 80) and (left < 115) and (top > 27) and (top < 32) then
             error("Exit by request")
@@ -297,11 +297,11 @@ while true do
     while game do
         local e, _, left, top, _, p2 = event.pullMultiple(1, "touch", "drag", "drop")
         if (os.time() >= ending) then
-            lose("не успел")
+            lose("didn't have time")
         end
         if (player == p2) then
             if ((e == "touch") or (e == "drop")) and (dragging) then
-                lose("отпустил мышь")
+                lose("let go of the mouse")
             end
             if (e == "touch") and ((left == 5) or (left == 6)) and (top == 19) then
                 lastx, lasty = math.floor((left - 3) / 2), (top - 2)

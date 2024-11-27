@@ -20,12 +20,12 @@ local function drawRightMenu()
     gpu.setBackground(0x990000)
     gpu.setForeground(0xFFFFFF)
     gpu.fill(41, 17, 28, 3, " ")
-    gpu.set(52, 18, "Выход")
+    gpu.set(52, 18, "Exit")
 
     gpu.setBackground(0x000000)
     gpu.setForeground(0xAAAAAA)
     gpu.fill(41, 2, 28, 14, " ")
-    gpu.set(42, 2, "Вывод:")
+    gpu.set(42, 2, "Conclusion:")
     for i = 1, #consoleLines do
         gpu.setForeground((15 - #consoleLines + i) * 0x111111)
         gpu.set(42, 16 - i, consoleLines[i])
@@ -48,8 +48,8 @@ local function drawGame()
     gpu.fill(30, 11, 8, 1, ' ')
     gpu.fill(4, 5, 20, 1, ' ')
     gpu.setForeground(0x00ff00)
-    gpu.set(4, 5, 'Комбинации:')
-    gpu.set(30, 11, 'Ставка:')
+    gpu.set(4, 5, 'Combinations:')
+    gpu.set(30, 11, 'Bid:')
 
     gpu.setBackground(0xffffff)
     for x = 0, 4 do
@@ -61,21 +61,21 @@ local function drawGame()
     gpu.fill(4, 6, 20, 9, ' ')
     gpu.fill(30, 12, 8, 5, ' ')
     gpu.setForeground(0xffffff)
-    gpu.set(4, 6, 'Флеш Рояль')
-    gpu.set(4, 7, 'Стрит Флеш')
-    gpu.set(4, 8, 'Каре')
-    gpu.set(4, 9, 'Фулл хаус')
-    gpu.set(4, 10, 'Флеш')
-    gpu.set(4, 11, 'Стрит')
-    gpu.set(4, 12, 'Трипс')
-    gpu.set(4, 13, 'Две пары')
-    gpu.set(4, 14, 'Пара вальтов и выше')
+    gpu.set(4, 6, 'Royal Flush')
+    gpu.set(4, 7, 'Straight Flush')
+    gpu.set(4, 8, 'Four of a Kind')
+    gpu.set(4, 9, 'Full House')
+    gpu.set(4, 10, 'Flush')
+    gpu.set(4, 11, 'Straight')
+    gpu.set(4, 12, 'Three of a Kind')
+    gpu.set(4, 13, 'Two pairs')
+    gpu.set(4, 14, 'High Card')
     for i = 1, 5 do
         gpu.set(33, 11 + i, tostring(i))
     end
     gpu.setBackground(0x00ff00)
     gpu.fill(30, 17, 8, 3, ' ')
-    gpu.set(31, 18, 'Начать')
+    gpu.set(31, 18, 'Begin')
 
     --Рисую картинку
     gpu.setBackground(0xffffff)
@@ -406,7 +406,7 @@ local function startGame()
     gpu.fill(4, 15, 25, 5, ' ')
     card_holds = { false, false, false, false, false }
     gpu.setBackground(0x00ff00)
-    gpu.set(30, 18, 'Поменять')
+    gpu.set(30, 18, 'Change')
     game = true
     players_cards = {}
     deck:hinder()
@@ -432,12 +432,12 @@ end
 
 local function rewardPlayer(reward)
     if reward and reward > 0 then
-        message("Вы выиграли " .. reward)
+        message("You won " .. reward)
         casino.reward(reward)
         gpu.setBackground(0x000000)
         gpu.setForeground(0xffffff)
     else
-        message("Вы проиграли ")
+        message("You lost")
     end
     casino.gameIsOver()
 end
@@ -451,7 +451,7 @@ local function updateCards()
     game = false
     gpu.setBackground(0x00ff00)
     gpu.setForeground(0xffffff)
-    gpu.set(30, 18, ' Начать ')
+    gpu.set(30, 18, ' Begin ')
     drawRewards(value, getCombination(players_cards))
     rewardPlayer(moneyOfCombination(getCombination(players_cards)))
 end
@@ -508,7 +508,7 @@ while true do
 
     if e and x >= 41 and x <= 69 and y >= 17 and y <= 19 then
         if game then
-            message("Сначала закончите игру")
+            message("Finish the game first")
         else
             error("Exit by request")
         end

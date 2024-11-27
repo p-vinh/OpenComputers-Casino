@@ -14,13 +14,13 @@ for i = 1, 13 do
 end
 
 local phraces = {
-    "Выкладываю вещи в сундуки",
-    "Подкручиваю шансы",
-    "Забираю все ценные призы",
-    "Гадаю по лунному гороскопу",
-    "Отправил запрос богу азарта",
-    "Лунная призма дай мне силу",
-    "Зову модера что б забанил вас"
+    "Putting things in the chests",
+    "Tightening the odds",
+    "I take away all the valuable prizes",
+    "I guess by the lunar horoscope",
+    "Sent a request to the god of excitement",
+    "Moon prism give me strength",
+    "I'm calling a moderator to ban you"
 }
 
 local function getSelectorByCords(x, y)
@@ -48,7 +48,7 @@ local function drawRightMenu()
     gpu.setBackground(0x000000)
     gpu.setForeground(0xAAAAAA)
     gpu.fill(41, 2, 28, 14, " ")
-    gpu.set(42, 2, "Вывод:")
+    gpu.set(42, 2, "Conclusion:")
     for i = 1, #consoleLines do
         gpu.setForeground((15 - #consoleLines + i) * 0x111111)
         gpu.set(42, 16 - i, consoleLines[i])
@@ -88,14 +88,14 @@ local function openItem(selectorX, selectorY, slotX, slotY)
     local slotNum = (slotY - 1) * 3 + slotX
     local item = selObj.items[slotNum].item
     if (selObj.items[slotNum].isOpen) then
-        message('Сундук уже открыт')
+        message('The chest is already open')
         return false
     end
     selObj.items[slotNum].isOpen = true
     selObj.selector.setSlot(slotNum, item)
-    message("Приз: " .. item.name)
+    message("Prize: " .. item.name)
     if (not casino.rewardItem(item.id, item.dmg, item.count)) then
-        message("Вещи нет в наличие")
+        message("Item is out of stock")
         casino.rewardManually(player, item.id, item.dmg, 1)
     end
     gpu.setBackground(selObj.colors[slotX][slotY].background)
@@ -108,7 +108,7 @@ end
 local function drawCountOfChest(count)
     gpu.setBackground(0xe0e0e0)
     gpu.setForeground(0x000000)
-    gpu.set(7, 18, 'Осталось сундуков: ' .. count .. '   ')
+    gpu.set(7, 18, 'Chests left: ' .. count .. '   ')
 end
 
 local function drawGame()
@@ -137,7 +137,7 @@ local function drawWaitingInverface()
     gpu.fill(3, 2, 38, 20, ' ')
     gpu.setForeground(0xaa0000)
     local randIndex = math.random(1, #phraces)
-    gpu.set(15, 9, "Загрузка ...")
+    gpu.set(15, 9, "Loading ...")
     gpu.set(10, 10, phraces[randIndex])
 end
 
@@ -183,9 +183,9 @@ local function drawItems(page)
     gpu.setBackground(0xa0a0a0)
     gpu.setForeground(0xffffff)
     gpu.fill(4, 2, 34, 14, ' ')
-    gpu.set(4, 2, 'Предмет')
-    gpu.set(28, 2, 'Кол.')
-    gpu.set(33, 2, 'Шанс')
+    gpu.set(4, 2, 'Item')
+    gpu.set(28, 2, 'Col.')
+    gpu.set(33, 2, 'Chance')
     gpu.setBackground(0xb0b0b0)
     gpu.fill(4, 3, 34, 13, ' ')
     gpu.setForeground(0x000000)
@@ -229,16 +229,16 @@ local function changeCountOfChests(value)
     gpu.setForeground(0xe0e0e0)
     gpu.setBackground(0x000000)
     gpu.fill(17, 17, 8, 3, ' ')
-    gpu.set(19, 17, 'Цена')
+    gpu.set(19, 17, 'Price')
     gpu.set(19, 18, countOfChests * price .. '')
-    gpu.set(20, 19, 'эм')
+    gpu.set(20, 19, 'drug')     -- ??
 end
 
 local function drawDisplay()
     casino.gameIsOver()
     gpu.setBackground(0xe0e0e0)
     term.clear()
-    changeExitButton("Выход")
+    changeExitButton("Exit")
     page = 1
     drawItems(page)
     changeCountOfChests(counts[1])
@@ -246,7 +246,7 @@ local function drawDisplay()
     gpu.setForeground(0xffffff)
     gpu.setBackground(0x00aa00)
     gpu.fill(26, 17, 12, 3, ' ')
-    gpu.set(29, 18, 'Начать')
+    gpu.set(29, 18, 'Begin')
 end
 
 local function showAllItems()
@@ -265,7 +265,7 @@ local function showAllItems()
 end
 
 local function startGame(count)
-    changeExitButton("Показать призы")
+    changeExitButton("Show prizes")
     drawWaitingInverface()
     drawSelectors()
     drawGame()
@@ -287,14 +287,14 @@ local function startGame(count)
                     drawCountOfChest(count)
                 end
             else
-                message("У вас нету сундуков")
+                message("You don't have any chests")
             end
         elseif x >= 41 and x <= 69 and y >= 17 and y <= 19 then
             if (count > 0) then
-                message("Используйте все сундуки")
+                message("Use all chests")
             elseif (not showedAllItems) then
                 showedAllItems = true
-                changeExitButton("Выход")
+                changeExitButton("Exit")
                 showAllItems()
             else
                 break

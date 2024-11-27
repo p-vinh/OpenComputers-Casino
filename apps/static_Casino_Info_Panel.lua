@@ -36,27 +36,27 @@ local function formattedText(x, y, text)
 end
 
 local howToPlay = [[
-&aКак играть?
- &f1. Зайдите в кабинку и выберите игру.
- 2. Положите в сундук необходимое количество валюты и играйте.
- &cБудьте внимательны и не пускайте посторонних игроков к себе в кабинку!
+&aHow to play?
+ &f1. Go to the booth and select a game.
+ 2. Place the required amount of currency in the chest and play.
+ &cBe careful and don’t let outside players into your booth!
 
-&aКак выбирать валюту?
- &fВ главном меню внизу обозначена текущая валюта. Нажатие на неё откроет выпадающий список,
- в котором можно выбрать иную валюту.
+&aHow to choose a currency?
+ &fThe current currency is indicated at the bottom of the main menu. Clicking on it will open a drop-down list,
+in which you can choose a different currency..
 
-&aК кому обращаться с вопросами?
+&aWho should I contact with questions?
  &f1. krovyaka &3Discord: &bkrovyaka#2862 &3VK: &bvk.com/krovyaka
  &f2. Durex77  &3Discord: &bDurex77#2033
 
-&aКак убедиться в честности казино?
- &fДанный варп одобрен старшим модераторским составом.
- При возникновении любых подозрений мы готовы предоставить любую необходимую информацию.
+&aHow to make sure the casino is honest?
+ &fThis warp has been approved by the senior moderators.
+  If any suspicions arise, we are ready to provide any necessary information.
 
-&aЧто в планах?
- &f1. Отображение текущей валюты в каждой игре, а не только в главном меню. &8(возможно выбор)
- &f2. Добавление большого количества слот-машин.
- &f3. Пробные игры без валюты.
+&aWhat are the plans?
+ &f1. isplays the current currency in every game, not just in the main menu. &8(choice possible)
+ &f2. Adding a large number of slot machines.
+ &f3. Trial games without currency.
 ]]
 
 gpu.setResolution(100, 25)

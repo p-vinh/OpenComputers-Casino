@@ -15,7 +15,7 @@ end
 
 local function drawRightMenu()
     buffer.drawRectangle(63, 2, 21, 12, 0, 0, " ")
-    buffer.drawText(63, 2, 0xAAAAAA, "Вывод:")
+    buffer.drawText(63, 2, 0xAAAAAA, "Conclusion:")
     for i = 1, #consoleLines do
         buffer.drawText(63, 2 + i, (15 - #consoleLines + i) * 0x111111, consoleLines[i])
     end
@@ -37,15 +37,15 @@ end
 
 local function initStaticData()
     local pre_symbols = {
-        { "fish", 5, "Фугу" },
-        { "cookie", 5, "Печенье" },
-        { "quartz", 5, "Кристалл истинного кварца" },
-        { "emerald", 10, "Изумруд" },
-        { "crystal", 10, "Лазутроновый кристалл" },
-        { "golden_apple", 20, "Золотое яблоко" },
-        { "diamond", 50, "Алмаз" },
-        { "uu_matter", 100, "Материя" },
-        { "creeper", 200, "Голова крипера" }
+        { "fish", 5, "Fish" },
+        { "cookie", 5, "Cookies" },
+        { "quartz", 5, "Quartz" },
+        { "emerald", 10, "Emerald" },
+        { "crystal", 10, "Crystal" },
+        { "golden_apple", 20, "Golden Apple" },
+        { "diamond", 50, "Diamond" },
+        { "uu_matter", 100, "Matter" },
+        { "creeper", 200, "Creeper" }
     }
     local imagesFolder = "/home/images/one_armed_creeper/"
     shell.execute("md " .. imagesFolder)
@@ -95,8 +95,8 @@ local function roll()
 end
 
 local function drawRewards()
-    buffer.drawText(6, 17, 0, "Пара смежных символов: " .. bet * 1 .. "  ")
-    buffer.drawText(6, 18, 0, "Пара символов по краям: " .. bet * 2 .. "  ")
+    buffer.drawText(6, 17, 0, "Pair of adjacent characters:: " .. bet * 1 .. "  ")
+    buffer.drawText(6, 18, 0, "A couple of characters around the edges: " .. bet * 2 .. "  ")
     local symbols = machine.symbols
     for i = 1, #symbols do
         buffer.drawText(7, 19 + i, 0, symbols[i].name .. ": " .. symbols[i].ratio * bet .. "  ")
@@ -115,11 +115,11 @@ local function drawStatic()
     buffer.drawRectangle(63, 26, 21, 1, 0xBFBFBF, 0, " ")
     buffer.drawRectangle(63, 23, 21, 3, 0xc7ffc6, 0, " ")
     buffer.drawRectangle(63, 27, 21, 3, 0xffc6c6, 0, " ")
-    buffer.drawText(5, 16, 0, "Награды:")
-    buffer.drawText(6, 19, 0, "Три символа в ряд:")
-    buffer.drawText(70, 15, 0, 'Ставка')
-    buffer.drawText(70, 24, 0, 'Играть')
-    buffer.drawText(70, 28, 0, 'Выход')
+    buffer.drawText(5, 16, 0, "Awards:")
+    buffer.drawText(6, 19, 0, "Three symbols in a row:")
+    buffer.drawText(70, 15, 0, 'Bid')
+    buffer.drawText(70, 24, 0, 'Play')
+    buffer.drawText(70, 28, 0, 'Exit')
     buffer.drawChanges()
 end
 
@@ -148,13 +148,13 @@ while true do
         if y >= 23 and y <= 25 then
             local payed, reason = casino.takeMoney(bet)
             if payed then
-                message("Вы поставили " .. bet)
+                message("You put " .. bet)
                 local ratio = calculateRewardRatio(roll())
                 if ratio > 0 then
-                    message("Вы выиграли " .. bet * ratio)
+                    message("You won " .. bet * ratio)
                     casino.reward(bet * ratio)
                 else
-                    message("Вы проиграли")
+                    message("You lost")
                 end
                 casino.gameIsOver()
             else

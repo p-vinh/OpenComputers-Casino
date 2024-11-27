@@ -212,11 +212,11 @@ local function drawDisplay()
     gpu.fill(32, 5, 6, 3, ' ')
     gpu.set(20, 5, '1')
     value = 1
-    gpu.set(32, 6, 'Начать')
+    gpu.set(32, 6, 'Begin')
     gpu.setForeground(0x000000)
     gpu.setBackground(0xffffff)
 
-    gpu.set(21, 3, 'Выберите ставку')
+    gpu.set(21, 3, 'Select bet')
 
 end
 
@@ -261,15 +261,15 @@ local function win()
     gpu.setBackground(0x00aa00)
     gpu.setForeground(0xffffff)
     gpu.fill(16, 4, 18, 1, " ")
-    gpu.set(16, 4, "Ставка: " .. value)
+    gpu.set(16, 4, "Bid: " .. value)
     gpu.fill(10, 16, 25, 1, " ")
-    gpu.set(10, 16, "Следующая ставка: " .. mathRound(value * 1.2, 2))
+    gpu.set(10, 16, "Next bet: " .. mathRound(value * 1.2, 2))
 end
 
 local function lose()
     login = false
     first_win = false
-    message("Вы проиграли!")
+    message("You lost!")
     os.sleep(1)
     drawDisplay()
     casino.gameIsOver()
@@ -297,7 +297,7 @@ end
 local function rewardPlayer(reward, msg)
     message(msg)
     local money = mathRound(reward, 2)
-    message("Вы выиграли " .. money)
+    message("You won " .. money)
     casino.reward(money)
     os.sleep(time_sleep_end)
     login = false
@@ -312,7 +312,7 @@ while true do
     local e, _, x, y = event.pull(3, "touch")
     if e and login then
         if (x >= 13 and y == 6 and x <= 28) then
-            rewardPlayer(value, "Вы забрали ставку.")
+            rewardPlayer(value, "You took the bet.")
             login = false
             os.sleep(1)
             drawDisplay()
@@ -322,7 +322,7 @@ while true do
         elseif (x >= 17 and y == 13 and x <= 24) then
             casinoPlay('less')
         elseif x >= 41 and x <= 69 and y >= 17 and y <= 19 then
-            message("Сначала закончите игру.")
+            message("Finish the game first.")
         end
     elseif e and not login then
         if x == 20 and y == 5 then
