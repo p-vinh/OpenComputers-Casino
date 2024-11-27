@@ -1,5 +1,4 @@
 return {
-    { name = "Иссушающий трутень", count = 4, id = 'Forestry:beeDroneGE', dmg = 0, chance = 5, color = 0xF6290C },
     { name = "Яйцо дракона", count = 1, id = 'minecraft:dragon_egg', dmg = 0, chance = 8, color = 0xF6290C },
 
     { name = "Звезда Ада", count = 1, id = 'minecraft:nether_star', dmg = 0, chance = 15, color = 0xEFE80A },
