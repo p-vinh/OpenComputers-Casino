@@ -144,12 +144,15 @@ table.insert(games, {
 })
 
 table.insert(games, {
-    title = "OpenChest",
-    file = "game_OpenChest.lua",
-    available = false,
-    image = "game_Chests.pic",
-    author = "Durex77",
-    description = ""
+    title = "Mines",
+    file = "game_Mines.lua",
+    available = True,
+    image = "game_Minesweeper.pic",
+    author = "Vinh, Jimmy",
+    description = "Mines - the goal is to avoid the mines and click on the safe spots.\n" ..
+            "If you click on a mine, you lose. If you click on a safe spot, you win.\n" ..
+            "The game ends when you click on a mine or when you click on all the safe spots.\n" ..
+            "Good luck!"
 })
 
 

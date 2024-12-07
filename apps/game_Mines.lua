@@ -1,3 +1,11 @@
+local component = require("component")
+local gpu = component.gpu
+local event = require("event")
+local term = require("term")
+local unicode = require("unicode")
+local casino = require("casino")
+
+
 math.randomseed(os.time()) -- Seed for randomness
 
 -- Constants
