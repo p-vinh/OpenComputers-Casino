@@ -105,6 +105,7 @@ local function handleFieldClick(row, col)
         gpu.setForeground(0xFF0000)
         gpu.set(5, 35, "Boom! You hit a mine. Game over.")
         game = false
+        animations.reveal()
     end
 end
 
@@ -235,7 +236,7 @@ while true do
         end
     end
 
-    if game and x >= 58 and x <= 75 and y >= 35 and y <= 33 then
+    if game and x >= 58 and x <= 75 and y >= 35 and y <= 37 then
         if not isCashOut then
             isCashOut = true
         else
