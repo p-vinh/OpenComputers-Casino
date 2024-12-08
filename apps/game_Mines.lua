@@ -223,7 +223,7 @@ while true do
             drawBoard(fields, false)
             gpu.setBackground(0xffa500)
             gpu.fill(58, 35, 17, 3, " ")
-            gpu.set(30, 36, "The game is on")
+            gpu.set(33, 36, "The game is on")
             gpu.setForeground(0xFFFFFF)
             gpu.setBackground(0x613C3C)
             gpu.fill(58, 35, 17, 3, " ")
@@ -240,15 +240,17 @@ while true do
             isCashOut = true
         else
             -- Confirm Cash Out
-            gpu.fill(58, 35, 17, 3, " ")
             gpu.setForeground(0x00FF00)
             gpu.set(5, 36, string.format("You cashed out with %.2f!", winnings))
+            gpu.fill(58, 35, 17, 3, " ")
             endGame()
         end
     end
 
     -- Game fields click
     if game then
+        drawBoard(fields, false)
+        
         local winnings = bets[bet]
         local col = math.floor((x - 5) / 12) + 1
         local row = math.floor((y - 3) / 6) + 1
