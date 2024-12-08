@@ -161,10 +161,10 @@ while true do
         end
     end
 
-    if game and left >= 5 and left <= 74 and top >= 2 and top <= 25 then
+    if game and x >= 5 and x <= 74 and y >= 2 and y <= 25 then
         local winnings = bets[bet]
 
-        if left >= 58 and left <= 75 and top >= 29 and top <= 33 then
+        if x >= 58 and x <= 75 and y >= 29 and y <= 33 then
             gpu.setForeground(0x00FF00)
             gpu.set(5, 36, string.format("You cashed out with %.2f!", winnings))
             endGame()
@@ -188,14 +188,14 @@ while true do
 
 
     -- Exit button
-    if not game and left >= 58 and left <= 75 and top >= 35 and top <= 37 then
+    if not game and x >= 58 and x <= 75 and y >= 35 and y <= 37 then
         error("Exit by request")
     end
 
     -- Bet buttons
-    if not game and top == 37 and left >= 5 and left <= 51 then
-        if (left - 5) % 7 < 5 then
-            bet = math.floor((left - 5) / 7) + 1
+    if not game and y == 37 and x >= 5 and x <= 51 then
+        if (x - 5) % 7 < 5 then
+            bet = math.floor((x - 5) / 7) + 1
             drawBets()
         end
     end
