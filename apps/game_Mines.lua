@@ -20,7 +20,7 @@ local fields = {} -- Game board
 local field_types = {
     ["safe"] = 0x98df94, -- Green
     ["mine"] = 0xff0000, -- Red
-    ["revealed"] = 0xd0d0d0 -- Grey
+    ["revealed"] = 0xffff00 -- Yellow
 }
 
 -- Helper Functions
@@ -47,6 +47,13 @@ local function placeMines(board, mineCount)
 end
 
 local function drawBoard(board, reveal)
+    -- Clear the entire grid area before drawing the grid
+    local gridWidth = BOARD_SIZE * 12
+    local gridHeight = BOARD_SIZE * 6
+    gpu.setBackground(0xe0e0e0) -- Reset to background color
+    gpu.fill(5, 3, gridWidth, gridHeight, " ") -- Clear the grid area
+
+    -- Draw the grid cells
     for row = 1, BOARD_SIZE do
         for col = 1, BOARD_SIZE do
             local x = 5 + (col - 1) * 12
@@ -62,6 +69,7 @@ local function drawBoard(board, reveal)
         end
     end
 end
+
 
 local function drawBetButtons()
     gpu.setForeground(0)
@@ -87,6 +95,12 @@ local function drawExitButton()
     gpu.setForeground(0xFFFFFF)
     gpu.set(64, 36, "Exit")
 end
+
+local function clearScreen()
+    gpu.setBackground(0xe0e0e0) -- Set background to default gray
+    gpu.fill(1, 1, 80, 40, " ") -- Clear the entire screen
+end
+
 
 local function drawUI()
     gpu.setBackground(0xe0e0e0)
@@ -116,18 +130,26 @@ local function handleFieldClick(row, col)
 end
 
 local function playGame()
+    clearScreen() -- Clear the entire screen before drawing the grid
     fields = createBoard(BOARD_SIZE)
     placeMines(fields, mineCount)
     drawBoard(fields, false)
-    local winnings = bets[bet]
+    drawCashOutButton()
     gpu.setForeground(0x0000FF)
     gpu.set(5, 35, "Game started! Good luck!")
+    local winnings = bets[bet]
 
     while game do
         local _, _, x, y = event.pull("touch")
+        if x >= 58 and x <= 75 and y >= 29 and y <= 33 then -- Cash Out button
+            gpu.setForeground(0x00FF00)
+            gpu.set(5, 36, string.format("You cashed out with %.2f!", winnings))
+            game = false
+            break
+        end
+
         local col = math.floor((x - 5) / 12) + 1
         local row = math.floor((y - 3) / 6) + 1
-
         if row >= 1 and row <= BOARD_SIZE and col >= 1 and col <= BOARD_SIZE then
             if fields[row][col] == "mine" then
                 handleFieldClick(row, col)
@@ -135,12 +157,15 @@ local function playGame()
                 fields[row][col] = "revealed"
                 drawBoard(fields, false)
                 winnings = winnings * MULTIPLIERS[mineCount] or 1.1
+                gpu.setForeground(0x0000FF)
                 gpu.set(5, 36, string.format("Safe! Current winnings: %.2f", winnings))
-                gpu.set(5, 37, "Cash out? Click 'Exit' or keep playing.")
             end
         end
     end
+
+    drawEndButtons()
 end
+
 
 -- Main Game Loop
 gpu.setResolution(80, 40)
