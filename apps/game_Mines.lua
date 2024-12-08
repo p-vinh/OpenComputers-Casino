@@ -235,7 +235,7 @@ while true do
         end
     end
 
-    if game and x >= 58 and x <= 75 and y >= 29 and y <= 33 then
+    if game and x >= 58 and x <= 75 and y >= 35 and y <= 33 then
         if not isCashOut then
             isCashOut = true
         else
@@ -250,7 +250,7 @@ while true do
     -- Game fields click
     if game then
         drawBoard(fields, false)
-        
+
         local winnings = bets[bet]
         local col = math.floor((x - 5) / 12) + 1
         local row = math.floor((y - 3) / 6) + 1
