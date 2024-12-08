@@ -58,6 +58,21 @@ local function drawCashOutButton()
     gpu.set(62, 31, "Cash Out")
 end
 
+local function endGame()
+    os.sleep(0.7)
+    animations.reveal()
+    gpu.setForeground(0xFFFFFF)
+    gpu.setBackground(0x990000)
+    gpu.fill(58, 35, 17, 3, " ")
+    gpu.set(64, 36, "Exit")
+    gpu.setBackground(0x90ef7e)
+    gpu.setForeground(0)
+    gpu.fill(58, 29, 17, 5, " ")
+    gpu.set(61, 31, "Start game")
+    game = false
+    casino.gameIsOver()
+end
+
 local function drawBoard(board, reveal)
     gpu.setBackground(0xe0e0e0)
     gpu.fill(5, 3, BOARD_SIZE * 12, BOARD_SIZE * 6, " ") -- Clear grid area
@@ -95,8 +110,8 @@ local function playGame()
     clearScreen()
     fields = createBoard(BOARD_SIZE)
     placeMines(fields, mineCount)
-    drawBoard(fields, true)
-    -- drawCashOutButton()
+    drawBoard(fields, false)
+    drawCashOutButton()
 
     local winnings = bets[bet]
     while game do
@@ -104,7 +119,7 @@ local function playGame()
         if x >= 58 and x <= 75 and y >= 29 and y <= 33 then
             gpu.setForeground(0x00FF00)
             gpu.set(5, 36, string.format("You cashed out with %.2f!", winnings))
-            game = false
+            endGame()
             break
         end
 
@@ -115,7 +130,7 @@ local function playGame()
                 handleFieldClick(row, col)
             elseif fields[row][col] == "safe" then
                 fields[row][col] = "revealed"
-                drawBoard(fields, true)
+                drawBoard(fields, false)
                 winnings = winnings * MULTIPLIERS[mineCount] or 1.1
                 gpu.setForeground(0x0000FF)
                 gpu.set(5, 36, string.format("Safe! Current winnings: %.2f", winnings))
