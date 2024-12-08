@@ -129,10 +129,10 @@ end
 
 local animations = {
     ["load"] = function()
-        for i = 1, 24 do
-            drawField(i, "safe")
-            os.sleep()
+        for i = 1, 16 do
             drawField(i, "revealed")
+            os.sleep()
+            drawField(i, "safe")
         end
     end,
 
@@ -236,10 +236,7 @@ while true do
 
     if game and x >= 58 and x <= 75 and y >= 29 and y <= 33 then
         if not isCashOut then
-            -- Enter "Cash Out" confirmation state
             isCashOut = true
-            gpu.setForeground(0xFFFF00)
-            gpu.set(5, 36, "Are you sure you want to cash out? Click again to confirm.")
         else
             -- Confirm Cash Out
             gpu.setForeground(0x00FF00)
