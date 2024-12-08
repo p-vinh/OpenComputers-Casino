@@ -1,6 +1,7 @@
 local component = require("component")
 local gpu = component.gpu
 local event = require("event")
+local term = require("term")
 local casino = require("casino")
 
 math.randomseed(os.time()) -- Seed for randomness
@@ -93,7 +94,7 @@ end
 
 local function handleFieldClick(row, col)
     local id = getBombId(row, col)
-    
+
     if fields[row][col] == "safe" then
         fields[row][col] = "revealed"
         drawBoard(fields, false)
