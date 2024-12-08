@@ -25,6 +25,57 @@ local field_types = {
     ["revealed"] = 0xffff00 -- Yellow
 }
 
+
+local animations = {
+    ["load"] = function()
+        for i = 1, 24 do
+            drawField(i, "revealed")
+            os.sleep()
+            drawField(i, "safe")
+        end
+    end,
+
+    ["reveal"] = function()
+        for i = 0, 3 do
+            for j = 1, 6 do
+                drawField(j + i * 6, "safe")
+            end
+            os.sleep(0.1)
+            for j = 1, 6 do
+                if (fields[j + i * 6] == "mine") then
+                    drawField(j + i * 6, "mine")
+                else
+                    drawField(j + i * 6, "safe")
+                end
+            end
+        end
+        os.sleep(2)
+        for i = 0, 3 do
+            for j = 1, 6 do
+                drawField(j + i * 6, "safe")
+            end
+            os.sleep(0.1)
+            for j = 1, 6 do
+                drawField(j + i * 6, "revealed")
+            end
+        end
+    end,
+    ["error"] = function()
+        for i = 1, 2 do
+            gpu.setBackground(0xff0000)
+            gpu.setForeground(0xffffff)
+            gpu.fill(58, 29, 17, 5, " ")
+            gpu.set(61, 31, "Start game")
+            os.sleep(0.1)
+            gpu.setBackground(0x90ef7e)
+            gpu.setForeground(0)
+            gpu.fill(58, 29, 17, 5, " ")
+            gpu.set(61, 31, "Start game")
+            os.sleep(0.1)
+        end
+    end
+}
+
 -- Helper Functions
 local function createBoard(size)
     local board = {}
@@ -135,55 +186,6 @@ local function drawField(x, f_type)
 end
 
 
-local animations = {
-    ["load"] = function()
-        for i = 1, 24 do
-            drawField(i, "revealed")
-            os.sleep()
-            drawField(i, "safe")
-        end
-    end,
-
-    ["reveal"] = function()
-        for i = 0, 3 do
-            for j = 1, 6 do
-                drawField(j + i * 6, "safe")
-            end
-            os.sleep(0.1)
-            for j = 1, 6 do
-                if (fields[j + i * 6] == "mine") then
-                    drawField(j + i * 6, "mine")
-                else
-                    drawField(j + i * 6, "safe")
-                end
-            end
-        end
-        os.sleep(2)
-        for i = 0, 3 do
-            for j = 1, 6 do
-                drawField(j + i * 6, "safe")
-            end
-            os.sleep(0.1)
-            for j = 1, 6 do
-                drawField(j + i * 6, "revealed")
-            end
-        end
-    end,
-    ["error"] = function()
-        for i = 1, 2 do
-            gpu.setBackground(0xff0000)
-            gpu.setForeground(0xffffff)
-            gpu.fill(58, 29, 17, 5, " ")
-            gpu.set(61, 31, "Start game")
-            os.sleep(0.1)
-            gpu.setBackground(0x90ef7e)
-            gpu.setForeground(0)
-            gpu.fill(58, 29, 17, 5, " ")
-            gpu.set(61, 31, "Start game")
-            os.sleep(0.1)
-        end
-    end
-}
 
 
 -- Main Game Loop
