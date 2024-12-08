@@ -108,6 +108,21 @@ local function handleFieldClick(row, col)
     end
 end
 
+local function drawField(x, f_type)
+    gpu.setBackground(field_types[f_type])
+    local pos_x, pos_y = getBombPos(x)
+    gpu.fill(pos_x, pos_y, 10, 5, " ")
+    if (f_type == "mine") then
+        gpu.setForeground(0)
+        gpu.set(pos_x, pos_y + 0, symb .. "      " .. symb)
+        gpu.set(pos_x, pos_y + 1, "  \\    /  ")
+        gpu.set(pos_x, pos_y + 2, "    " .. symb .. "    ")
+        gpu.set(pos_x, pos_y + 3, "  /    \\  ")
+        gpu.set(pos_x, pos_y + 4, symb .. "      " .. symb)
+    end
+end
+
+
 local animations = {
     ["load"] = function()
         for i = 1, 24 do
