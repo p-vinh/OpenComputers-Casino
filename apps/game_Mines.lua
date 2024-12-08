@@ -151,7 +151,7 @@ while true do
             term.clear()
             gpu.setBackground(0xffa500)
             gpu.fill(58, 35, 17, 3, " ")
-            gpu.set(55, 36, "The game is on")
+            gpu.set(45, 36, "The game is on")
             gpu.setForeground(0xFFFFFF)
             gpu.setBackground(0x613C3C)
             gpu.fill(58, 35, 17, 3, " ")
@@ -164,14 +164,6 @@ while true do
 
     if game then
         local winnings = bets[bet]
-
-        if x >= 58 and x <= 75 and y >= 29 and y <= 33 then
-            gpu.setForeground(0x00FF00)
-            gpu.set(5, 36, string.format("You cashed out with %.2f!", winnings))
-            endGame()
-            break
-        end
-
         local col = math.floor((x - 5) / 12) + 1
         local row = math.floor((y - 3) / 6) + 1
         if row >= 1 and row <= BOARD_SIZE and col >= 1 and col <= BOARD_SIZE then
@@ -184,6 +176,13 @@ while true do
                 gpu.setForeground(0x0000FF)
                 gpu.set(5, 36, string.format("Safe! Current winnings: %.2f", winnings))
             end
+        end
+
+        if x >= 58 and x <= 75 and y >= 29 and y <= 33 then
+            gpu.setForeground(0x00FF00)
+            gpu.set(5, 36, string.format("You cashed out with %.2f!", winnings))
+            endGame()
+            break
         end
     end
 
