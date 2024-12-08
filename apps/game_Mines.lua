@@ -129,7 +129,7 @@ end
 
 local animations = {
     ["load"] = function()
-        for i = 1, 16 do
+        for i = 1, 24 do
             drawField(i, "revealed")
             os.sleep()
             drawField(i, "safe")
