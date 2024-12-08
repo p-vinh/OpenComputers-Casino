@@ -17,6 +17,7 @@ local bet = 1 -- Default bet index
 local mineCount = 1 -- Default mine count
 local game = false
 local fields = {} -- Game board
+local isCashOut = false -- Cash out flag
 
 local field_types = {
     ["safe"] = 0x98df94, -- Green
@@ -59,7 +60,7 @@ end
 
 local function endGame()
     os.sleep(0.7)
-    -- animations.reveal()
+    animations.reveal()
     gpu.setForeground(0xFFFFFF)
     gpu.setBackground(0x990000)
     gpu.fill(58, 35, 17, 3, " ")
@@ -107,6 +108,56 @@ local function handleFieldClick(row, col)
     end
 end
 
+local animations = {
+    ["load"] = function()
+        for i = 1, 24 do
+            drawField(i, "safe")
+            os.sleep()
+            drawField(i, "revealed")
+        end
+    end,
+
+    ["reveal"] = function()
+        for i = 0, 3 do
+            for j = 1, 6 do
+                drawField(j + i * 6, "safe")
+            end
+            os.sleep(0.1)
+            for j = 1, 6 do
+                if (fields[j + i * 6] == "mine") then
+                    drawField(j + i * 6, "mine")
+                else
+                    drawField(j + i * 6, "close")
+                end
+            end
+        end
+        os.sleep(1)
+        for i = 0, 3 do
+            for j = 1, 6 do
+                drawField(j + i * 6, "safe")
+            end
+            os.sleep(0.1)
+            for j = 1, 6 do
+                drawField(j + i * 6, "revealed")
+            end
+        end
+    end,
+    ["error"] = function()
+        for i = 1, 2 do
+            gpu.setBackground(0xff0000)
+            gpu.setForeground(0xffffff)
+            gpu.fill(58, 29, 17, 5, " ")
+            gpu.set(61, 31, "Start game")
+            os.sleep(0.1)
+            gpu.setBackground(0x90ef7e)
+            gpu.setForeground(0)
+            gpu.fill(58, 29, 17, 5, " ")
+            gpu.set(61, 31, "Start game")
+            os.sleep(0.1)
+        end
+    end
+}
+
 
 -- Main Game Loop
 gpu.setResolution(80, 40)
@@ -134,6 +185,7 @@ gpu.setForeground(0)
 gpu.fill(58, 29, 17, 5, " ")
 gpu.set(61, 31, "Start game")
 drawBets()
+animations.load()
 
 while true do
     local _, _, x, y = event.pull("touch")
@@ -156,12 +208,28 @@ while true do
             gpu.setBackground(0x613C3C)
             gpu.fill(58, 35, 17, 3, " ")
             gpu.set(64, 36, "Cash Out")
+            isCashOut = false
         else
             gpu.setForeground(0xFF0000)
             gpu.set(5, 34, "Not enough money to start the game!")
         end
     end
 
+    if game and x >= 58 and x <= 75 and y >= 29 and y <= 33 then
+        if not isCashOut then
+            -- Enter "Cash Out" confirmation state
+            isCashOut = true
+            gpu.setForeground(0xFFFF00)
+            gpu.set(5, 36, "Are you sure you want to cash out? Click again to confirm.")
+        else
+            -- Confirm Cash Out
+            gpu.setForeground(0x00FF00)
+            gpu.set(5, 36, string.format("You cashed out with %.2f!", winnings))
+            endGame()
+        end
+    end
+
+    -- Game fields click
     if game then
         local winnings = bets[bet]
         local col = math.floor((x - 5) / 12) + 1
@@ -177,15 +245,7 @@ while true do
                 gpu.set(5, 36, string.format("Safe! Current winnings: %.2f", winnings))
             end
         end
-
-        if x >= 58 and x <= 75 and y >= 29 and y <= 33 then
-            gpu.setForeground(0x00FF00)
-            gpu.set(5, 36, string.format("You cashed out with %.2f!", winnings))
-            endGame()
-            break
-        end
     end
-
 
     -- Exit button
     if not game and x >= 58 and x <= 75 and y >= 35 and y <= 37 then
