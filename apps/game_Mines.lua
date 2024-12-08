@@ -112,7 +112,7 @@ local function handleFieldClick(row, col)
         gpu.setForeground(0xFF0000)
         gpu.set(5, 35, "Boom! You hit a mine. Game over.")
         game = false
-        animations.reveal()
+        animation.reveal()
     end
 end
 
