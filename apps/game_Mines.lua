@@ -95,8 +95,8 @@ local function playGame()
     clearScreen()
     fields = createBoard(BOARD_SIZE)
     placeMines(fields, mineCount)
-    drawBoard(fields, false)
-    drawCashOutButton()
+    drawBoard(fields, true)
+    -- drawCashOutButton()
 
     local winnings = bets[bet]
     while game do
@@ -115,7 +115,7 @@ local function playGame()
                 handleFieldClick(row, col)
             elseif fields[row][col] == "safe" then
                 fields[row][col] = "revealed"
-                drawBoard(fields, false)
+                drawBoard(fields, true)
                 winnings = winnings * MULTIPLIERS[mineCount] or 1.1
                 gpu.setForeground(0x0000FF)
                 gpu.set(5, 36, string.format("Safe! Current winnings: %.2f", winnings))
