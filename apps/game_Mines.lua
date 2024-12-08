@@ -179,7 +179,7 @@ local animations = {
 
 
 -- Main Game Loop
-gpu.setResolution(80, 40)
+gpu.setResolution(78, 39)
 gpu.setBackground(0xe0e0e0)
 term.clear()
 gpu.setBackground(0xffffff)
@@ -222,7 +222,7 @@ while true do
             term.clear()
             gpu.setBackground(0xffa500)
             gpu.fill(58, 35, 17, 3, " ")
-            gpu.set(45, 36, "The game is on")
+            gpu.set(30, 36, "The game is on")
             gpu.setForeground(0xFFFFFF)
             gpu.setBackground(0x613C3C)
             gpu.fill(58, 35, 17, 3, " ")
@@ -239,6 +239,7 @@ while true do
             isCashOut = true
         else
             -- Confirm Cash Out
+            gpu.fill(58, 35, 17, 3, " ")
             gpu.setForeground(0x00FF00)
             gpu.set(5, 36, string.format("You cashed out with %.2f!", winnings))
             endGame()
