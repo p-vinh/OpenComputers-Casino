@@ -146,7 +146,7 @@ local animations = {
                 if (fields[j + i * 6] == "mine") then
                     drawField(j + i * 6, "mine")
                 else
-                    drawField(j + i * 6, "close")
+                    drawField(j + i * 6, "safe")
                 end
             end
         end
@@ -217,9 +217,10 @@ while true do
             -- Generate game board
             fields = createBoard(BOARD_SIZE)
             placeMines(fields, mineCount)
-            drawBoard(fields, false)
             game = true
             term.clear()
+            
+            drawBoard(fields, false)
             gpu.setBackground(0xffa500)
             gpu.fill(58, 35, 17, 3, " ")
             gpu.set(30, 36, "The game is on")
