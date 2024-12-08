@@ -96,12 +96,12 @@ local function drawDisplayForOneHand()
 
     gpu.setBackground(0x20B2AA)
     gpu.fill(9, 11, 11, 1, ' ')
-    gpu.set(13, 11, 'More')
+    gpu.set(13, 11, 'Hit')
     gpu.fill(22, 11, 11, 1, ' ')
-    gpu.set(25, 11, 'Enough')       -- could be less
+    gpu.set(25, 11, 'Stand')       -- could be less
 
     gpu.fill(9, 13, 11, 1, ' ')
-    gpu.set(11, 13, 'Double')
+    gpu.set(11, 13, 'Double Down')
 
     gpu.setBackground(0x00aa00)
     gpu.setForeground(0xffffff)
@@ -225,11 +225,10 @@ local function drawDisplay()
     gpu.set(5, 11, 'Blackjack')
     gpu.set(5, 13, 'Rules:')
     gpu.set(5, 14, '1. Need to score more points,')
-    gpu.set(5, 15, 'чем у дилера.')
+    gpu.set(5, 15, 'than the dealer')
     gpu.set(5, 16, '2. You cannot score more than 21 points.')
     gpu.set(5, 17, '3. Winning doubles the bet.')
     gpu.set(5, 18, '4. Draw returns bet.')
-    gpu.set(5, 19, 'More details are available on the Internet.')
 
     gpu.set(21, 3, 'Select bet')
 end
@@ -403,7 +402,7 @@ local function dialerStartPlay()
     if countCards(dialer_cards, true) > 21 then
         message("Bust, player victory!")
         casino.reward(value * 2)
-        message("Вы выиграли " .. 2 * value .. "$")
+        message("You won " .. 2 * value .. "$")
         os.sleep(time_sleep_end)
         login = false
         drawDisplay()

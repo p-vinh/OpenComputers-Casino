@@ -9,10 +9,16 @@ local casino = require("casino")
 math.randomseed(os.time()) -- Seed for randomness
 
 -- Constants
-local BOARD_SIZE = 5
+local BOARD_SIZE = 5 -- 5x5 board
 local VALID_BETS = {1, 5, 10, 50, 100}
 local MULTIPLIERS = { -- Multipliers based on number of mines
     [1] = 1.1, [5] = 1.5, [10] = 2.0, [15] = 3.0, [20] = 5.0, [24] = 10.0
+} -- 24 mines is impossible to win
+
+local field_types = {
+    ["safe"] = 0x98df94, -- Green
+    ["mine"] = 0xff0000, -- Red
+    ["revealed"] = 0xd0d0d0 -- Grey
 }
 
 -- Helper Functions
@@ -60,23 +66,87 @@ local function displayBoard(board, reveal)
     end
 end
 
+local function getBombPos(x)
+    return 5 + ((x - 1) % 6) * 12, 3 + math.floor((x - 1) / 6) * 6
+end
+
 -- Main Game Logic
+local function drawField(x, f_type)
+    gpu.setBackground(field_types[f_type])
+    local pos_x, pos_y = getBombPos(x)
+    gpu.fill(pos_x, pos_y, 10, 5, " ")
+    if f_type == "mine" then
+        gpu.setForeground(0)
+        gpu.set(pos_x, pos_y + 0, " *      * ")
+        gpu.set(pos_x, pos_y + 1, "  \\    /  ")
+        gpu.set(pos_x, pos_y + 2, "    *    ")
+        gpu.set(pos_x, pos_y + 3, "  /    \\  ")
+        gpu.set(pos_x, pos_y + 4, " *      * ")
+    end
+end
+
+local animations = {
+    ["load"] = function()
+        for i = 1, 24 do
+            drawField(i, "safe")
+            os.sleep(0.1)
+            drawField(i, "close")
+        end
+    end,
+
+    ["reveal"] = function()
+        for i = 0, 3 do
+            for j = 1, 6 do
+                drawField(j + i * 6, "safe")
+            end
+            os.sleep(0.1)
+            for j = 1, 6 do
+                if fields[j + i * 6] == "close_bomb" then
+                    drawField(j + i * 6, "mine")
+                else
+                    drawField(j + i * 6, "close")
+                end
+            end
+        end
+        os.sleep(1)
+        for i = 0, 3 do
+            for j = 1, 6 do
+                drawField(j + i * 6, "safe")
+            end
+            os.sleep(0.1)
+            for j = 1, 6 do
+                drawField(j + i * 6, "close")
+            end
+        end
+    end,
+
+    ["reveal_all"] = function()
+        for i = 1, 24 do
+            if fields[i] == "close_bomb" then
+                drawField(i, "mine")
+            else
+                drawField(i, "safe")
+            end
+        end
+    end,
+    ["error"] = function()
+        for i = 1, 2 do
+            gpu.setBackground(0xff0000)
+            gpu.setForeground(0xffffff)
+            gpu.fill(58, 29, 17, 5, " ")
+            gpu.set(61, 31, "Start game")
+            os.sleep(0.1)
+            gpu.setBackground(0x90ef7e)
+            gpu.setForeground(0)
+            gpu.fill(58, 29, 17, 5, " ")
+            gpu.set(61, 31, "Start game")
+            os.sleep(0.1)
+        end
+    end
+}
+
 local function playGame()
     print("Welcome to Mines!")
-
-    -- Ask for number of mines
-    local mineCount
-    repeat
-        io.write("Enter number of mines (1-" .. (BOARD_SIZE^2 - 1) .. "): ")
-        mineCount = tonumber(io.read())
-    until mineCount and mineCount > 0 and mineCount < BOARD_SIZE^2
-
-    -- Ask for bet
-    local bet
-    repeat
-        io.write("Enter your bet (" .. table.concat(VALID_BETS, ", ") .. "): ")
-        bet = tonumber(io.read())
-    until isValidBet(bet)
 
     -- Setup board
     local board = createBoard(BOARD_SIZE)
@@ -119,4 +189,130 @@ local function playGame()
     displayBoard(board, true)
 end
 
-playGame()
+
+local function endGame()
+    os.sleep(0.7)
+    animations.reveal()
+    gpu.setForeground(0xFFFFFF)
+    gpu.setBackground(0x990000)
+    gpu.fill(58, 35, 17, 3, " ")
+    gpu.set(64, 36, "Exit")
+    gpu.setBackground(0x90ef7e)
+    gpu.setForeground(0)
+    gpu.fill(58, 29, 17, 5, " ")
+    gpu.set(61, 31, "Start game")
+    game = false
+    casino.gameIsOver()
+end
+
+local function drawBets()
+    gpu.setForeground(0)
+    for i = 0, #bets - 1 do
+        gpu.setBackground(i == bet - 1 and 0x90ef7e or 0xd0d0d0)
+        gpu.fill(5 + i * 7, 37, 5, 1, " ")
+        gpu.set(7 + i * 7, 37, tostring(bets[i + 1]))
+    end
+end
+
+local function handleFieldClick(top, left)
+    local id = getBombId(left, top)
+    if (id > 0) then
+        if (fields[id] == "safe") then
+            drawField(id, "revealed")
+            fields[id] = "revealed"
+        end
+        if (fields[id] == "mine") then
+            drawField(id, "mine")
+            endGame()
+            return
+        end
+    end
+    -- ADD CASH OUT BUTTON
+    if (attempts == 0) then
+        casino.reward(bets[bet] * 2)
+        endGame()
+        return
+    end
+end
+
+local function getBombId(left, top)
+    if (((left - 3) % 12) == 0) or (((left - 4) % 12) == 0) or (((top - 2) % 6) == 0) then
+        return 0
+    end
+    return (math.floor((top - 3) / 6) * 6) + math.floor((left + 7) / 12)
+end
+
+-- Main Game Loop
+
+gpu.setResolution(78, 39)
+gpu.setBackground(0xe0e0e0)
+term.clear()
+gpu.setBackground(0xffffff)
+gpu.fill(3, 2, 74, 37, " ")
+gpu.setForeground(0x00a000)
+gpu.set(4, 29, "Game rules and rewards:")
+gpu.set(4, 35, "Bid:")
+gpu.setForeground(0x000000)
+gpu.set(4, 30, "Start the game and look for fields without mines.")
+gpu.set(4, 31, "You can cash out whenever you want, but if you")
+gpu.set(4, 32, "hit a mine, you lose the bet.")
+gpu.setBackground(0xe0e0e0)
+gpu.fill(1, 27, 76, 1, " ")
+gpu.fill(54, 27, 2, 12, " ")
+gpu.setForeground(0xFFFFFF)
+gpu.setBackground(0x990000)
+gpu.fill(58, 35, 17, 3, " ")
+gpu.set(64, 36, "Exit")
+gpu.setBackground(0x90ef7e)
+gpu.setForeground(0)
+gpu.fill(58, 29, 17, 5, " ")
+gpu.set(61, 31, "Start game")
+drawBets()
+animations.load()
+
+
+while true do
+    local _, _, left, top = event.pull("touch")
+
+    -- start game button
+    if not game and left >= 58 and left <= 75 and top >= 29 and top <= 33 then
+        local payed, reason = casino.takeMoney(bets[bet])
+        if payed then
+            local mineCount = 1 -- Default to 1 mine
+            local board = createBoard(BOARD_SIZE)
+            placeMines(board, mineCount)     
+               
+            gpu.setBackground(0xffa500)
+            gpu.fill(58, 29, 17, 5, " ")
+            gpu.set(62, 31, "The game is on")
+            gpu.setForeground(0xFFFFFF)
+            gpu.setBackground(0x613C3C)
+            gpu.fill(58, 35, 17, 3, " ")
+            gpu.set(64, 36, "Exit")
+            game = true
+        else
+            animations.error()
+        end
+    end
+
+    -- exit button
+    if not game and left >= 58 and left <= 75 and top >= 35 and top <= 37 then
+        error("Exit by request")
+    end
+
+    -- game fields
+    if game and left >= 5 and left <= 74 and top >= 2 and top <= 25 then
+        handleFieldClick(top, left)
+    end
+
+    -- bet buttons
+    if not game and top == 37 and left >= 5 and left <= 51 then
+        if (left - 5) % 7 < 5 then
+            bet = math.floor((left - 5) / 7) + 1
+            drawBets()
+        end
+    end
+    
+    -- ADD MINE MULTIPLIER BUTTON. DEFAULT MINE COUNT IS 1
+
+end

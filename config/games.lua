@@ -146,7 +146,7 @@ table.insert(games, {
 table.insert(games, {
     title = "Mines",
     file = "game_Mines.lua",
-    available = True,
+    available = true,
     image = "game_Minesweeper.pic",
     author = "Vinh, Jimmy",
     description = "Mines - the goal is to avoid the mines and click on the safe spots.\n" ..
