@@ -158,7 +158,7 @@ local animations = {
                 end
             end
         end
-        os.sleep(1)
+        os.sleep(2)
         for i = 0, 3 do
             for j = 1, 6 do
                 drawField(j + i * 6, "safe")
@@ -231,8 +231,6 @@ while true do
             drawBoard(fields, false)
             gpu.setBackground(0xffa500)
             gpu.fill(58, 35, 17, 3, " ")
-            gpu.set(33, 36, "The game is on")
-            gpu.setForeground(0xFFFFFF)
             gpu.setBackground(0x613C3C)
             gpu.fill(58, 35, 17, 3, " ")
             gpu.set(64, 36, "Cash Out")
@@ -269,11 +267,6 @@ while true do
                 fields[row][col] = "revealed"
                 drawBoard(fields, false)
                 winnings = winnings * MULTIPLIERS[mineCount] or 1.1
-
-                -- Clear the previous text
-                gpu.setBackground(0xe0e0e0) -- Use the background color
-                gpu.fill(5, 36, 40, 1, " ") -- Clear the text area
-                
                 -- Write the updated text
                 gpu.setForeground(0x0000FF)
                 gpu.set(5, 36, string.format("Safe! Current winnings: %.2f", winnings))
