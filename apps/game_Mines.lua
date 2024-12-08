@@ -241,21 +241,19 @@ while true do
         end
     end
 
-    if game and x >= 58 and x <= 75 and y >= 35 and y <= 37 then
-        if not isCashOut then
-            isCashOut = true
-        else
-            -- Confirm Cash Out
-            gpu.setForeground(0x00FF00)
-            gpu.set(5, 36, string.format("You cashed out with %.2f!", winnings))
-            gpu.fill(58, 35, 17, 3, " ")
-            endGame()
-        end
-    end
-
     -- Game fields click
     if game then
-        drawBoard(fields, false)
+        if x >= 58 and x <= 75 and y >= 35 and y <= 37 then
+            if not isCashOut then
+                isCashOut = true
+            else
+                -- Confirm Cash Out
+                gpu.setForeground(0x00FF00)
+                gpu.set(5, 36, string.format("You cashed out with %.2f!", winnings))
+                gpu.fill(58, 35, 17, 3, " ")
+                endGame()
+            end
+        end
 
         local winnings = bets[bet]
         local col = math.floor((x - 5) / 12) + 1
@@ -265,11 +263,12 @@ while true do
                 handleFieldClick(row, col)
             elseif fields[row][col] == "safe" then
                 fields[row][col] = "revealed"
+                gpu.setForeground(0x0000FF)
+                gpu.set(5, 36, string.format("Safe! Current winnings: %.2f", winnings))
                 drawBoard(fields, false)
                 winnings = winnings * MULTIPLIERS[mineCount] or 1.1
                 -- Write the updated text
-                gpu.setForeground(0x0000FF)
-                gpu.set(5, 36, string.format("Safe! Current winnings: %.2f", winnings))
+
             end
         end
     end
