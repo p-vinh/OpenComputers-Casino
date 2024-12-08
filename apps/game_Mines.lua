@@ -58,7 +58,7 @@ end
 
 local function endGame()
     os.sleep(0.7)
-    animations.reveal()
+    -- animations.reveal()
     gpu.setForeground(0xFFFFFF)
     gpu.setBackground(0x990000)
     gpu.fill(58, 35, 17, 3, " ")
@@ -92,6 +92,8 @@ local function drawBoard(board, reveal)
 end
 
 local function handleFieldClick(row, col)
+    local id = getBombId(row, col)
+    
     if fields[row][col] == "safe" then
         fields[row][col] = "revealed"
         drawBoard(fields, false)
@@ -131,7 +133,6 @@ gpu.setForeground(0)
 gpu.fill(58, 29, 17, 5, " ")
 gpu.set(61, 31, "Start game")
 drawBets()
-animations.load()
 
 while true do
     local _, _, x, y = event.pull("touch")
@@ -141,6 +142,10 @@ while true do
     if not game and x >= 58 and x <= 75 and y >= 29 and y <= 33 then
         local payed, reason = casino.takeMoney(bets[bet])
         if payed then
+            -- Generate game board
+            fields = createBoard(BOARD_SIZE)
+            placeMines(fields, mineCount)
+            drawBoard(fields, false)
             game = true
             gpu.setBackground(0xffa500)
             gpu.fill(58, 29, 17, 5, " ")
@@ -158,12 +163,7 @@ while true do
     if game and left >= 5 and left <= 74 and top >= 2 and top <= 25 then
         local winnings = bets[bet]
 
-        -- Generate game board
-        fields = createBoard(BOARD_SIZE)
-        placeMines(fields, mineCount)
-        drawBoard(fields, false)
-
-        if x >= 58 and x <= 75 and y >= 29 and y <= 33 then
+        if left >= 58 and left <= 75 and top >= 29 and top <= 33 then
             gpu.setForeground(0x00FF00)
             gpu.set(5, 36, string.format("You cashed out with %.2f!", winnings))
             endGame()
