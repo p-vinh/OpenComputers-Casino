@@ -148,9 +148,10 @@ while true do
             placeMines(fields, mineCount)
             drawBoard(fields, false)
             game = true
+            term.clear()
             gpu.setBackground(0xffa500)
-            gpu.fill(58, 29, 17, 5, " ")
-            gpu.set(62, 31, "The game is on")
+            gpu.fill(58, 35, 17, 3, " ")
+            gpu.set(55, 36, "The game is on")
             gpu.setForeground(0xFFFFFF)
             gpu.setBackground(0x613C3C)
             gpu.fill(58, 35, 17, 3, " ")
@@ -161,7 +162,7 @@ while true do
         end
     end
 
-    if game and x >= 5 and x <= 74 and y >= 2 and y <= 25 then
+    if game then
         local winnings = bets[bet]
 
         if x >= 58 and x <= 75 and y >= 29 and y <= 33 then
