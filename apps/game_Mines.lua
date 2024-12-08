@@ -104,36 +104,6 @@ local function handleFieldClick(row, col)
     end
 end
 
-local function playGame()
-    fields = createBoard(BOARD_SIZE)
-    placeMines(fields, mineCount)
-    drawBoard(fields, false)
-
-    local winnings = bets[bet]
-    while game do
-        local _, _, x, y = event.pull("touch")
-        if x >= 58 and x <= 75 and y >= 29 and y <= 33 then
-            gpu.setForeground(0x00FF00)
-            gpu.set(5, 36, string.format("You cashed out with %.2f!", winnings))
-            endGame()
-            break
-        end
-
-        local col = math.floor((x - 5) / 12) + 1
-        local row = math.floor((y - 3) / 6) + 1
-        if row >= 1 and row <= BOARD_SIZE and col >= 1 and col <= BOARD_SIZE then
-            if fields[row][col] == "mine" then
-                handleFieldClick(row, col)
-            elseif fields[row][col] == "safe" then
-                fields[row][col] = "revealed"
-                drawBoard(fields, false)
-                winnings = winnings * MULTIPLIERS[mineCount] or 1.1
-                gpu.setForeground(0x0000FF)
-                gpu.set(5, 36, string.format("Safe! Current winnings: %.2f", winnings))
-            end
-        end
-    end
-end
 
 -- Main Game Loop
 gpu.setResolution(80, 40)
@@ -179,10 +149,39 @@ while true do
             gpu.setBackground(0x613C3C)
             gpu.fill(58, 35, 17, 3, " ")
             gpu.set(64, 36, "Cash Out")
-            playGame()
         else
             gpu.setForeground(0xFF0000)
             gpu.set(5, 34, "Not enough money to start the game!")
+        end
+    end
+
+    if game and left >= 5 and left <= 74 and top >= 2 and top <= 25 then
+        local winnings = bets[bet]
+
+        -- Generate game board
+        fields = createBoard(BOARD_SIZE)
+        placeMines(fields, mineCount)
+        drawBoard(fields, false)
+
+        if x >= 58 and x <= 75 and y >= 29 and y <= 33 then
+            gpu.setForeground(0x00FF00)
+            gpu.set(5, 36, string.format("You cashed out with %.2f!", winnings))
+            endGame()
+            break
+        end
+
+        local col = math.floor((x - 5) / 12) + 1
+        local row = math.floor((y - 3) / 6) + 1
+        if row >= 1 and row <= BOARD_SIZE and col >= 1 and col <= BOARD_SIZE then
+            if fields[row][col] == "mine" then
+                handleFieldClick(row, col)
+            elseif fields[row][col] == "safe" then
+                fields[row][col] = "revealed"
+                drawBoard(fields, false)
+                winnings = winnings * MULTIPLIERS[mineCount] or 1.1
+                gpu.setForeground(0x0000FF)
+                gpu.set(5, 36, string.format("Safe! Current winnings: %.2f", winnings))
+            end
         end
     end
 
