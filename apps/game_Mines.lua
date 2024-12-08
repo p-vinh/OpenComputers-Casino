@@ -108,6 +108,10 @@ local function handleFieldClick(row, col)
     end
 end
 
+local function getBombPos(x)
+    return 5 + ((x - 1) % 6) * 12, 3 + math.floor((x - 1) / 6) * 6
+end
+
 local function drawField(x, f_type)
     gpu.setBackground(field_types[f_type])
     local pos_x, pos_y = getBombPos(x)
