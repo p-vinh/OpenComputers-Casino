@@ -93,6 +93,13 @@ local function drawBoard(board, reveal)
     end
 end
 
+local function getBombId(left, top)
+    if (((left - 3) % 12) == 0) or (((left - 4) % 12) == 0) or (((top - 2) % 6) == 0) then
+        return 0
+    end
+    return (math.floor((top - 3) / 6) * 6) + math.floor((left + 7) / 12)
+end
+
 local function handleFieldClick(row, col)
     local id = getBombId(row, col)
 
