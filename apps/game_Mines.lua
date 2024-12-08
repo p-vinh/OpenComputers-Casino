@@ -46,14 +46,22 @@ local function placeMines(board, mineCount)
     end
 end
 
-local function drawBoard(board, reveal)
-    -- Clear the entire grid area before drawing the grid
-    local gridWidth = BOARD_SIZE * 12
-    local gridHeight = BOARD_SIZE * 6
-    gpu.setBackground(0xe0e0e0) -- Reset to background color
-    gpu.fill(5, 3, gridWidth, gridHeight, " ") -- Clear the grid area
+local function clearScreen()
+    gpu.setBackground(0xe0e0e0) -- Set background to default gray
+    gpu.fill(1, 1, 80, 40, " ") -- Clear the entire screen
+end
 
-    -- Draw the grid cells
+local function drawCashOutButton()
+    gpu.setBackground(0x90ef7e)
+    gpu.fill(58, 29, 17, 5, " ")
+    gpu.setForeground(0)
+    gpu.set(62, 31, "Cash Out")
+end
+
+local function drawBoard(board, reveal)
+    gpu.setBackground(0xe0e0e0)
+    gpu.fill(5, 3, BOARD_SIZE * 12, BOARD_SIZE * 6, " ") -- Clear grid area
+
     for row = 1, BOARD_SIZE do
         for col = 1, BOARD_SIZE do
             local x = 5 + (col - 1) * 12
@@ -70,52 +78,6 @@ local function drawBoard(board, reveal)
     end
 end
 
-
-local function drawBetButtons()
-    gpu.setForeground(0)
-    for i = 1, #bets do
-        local bg = (i == bet) and 0x90ef7e or 0xd0d0d0
-        local x = 5 + (i - 1) * 7
-        gpu.setBackground(bg)
-        gpu.fill(x, 37, 5, 1, " ")
-        gpu.set(x + 1, 37, tostring(bets[i]))
-    end
-end
-
-local function drawStartButton()
-    gpu.setBackground(0x90ef7e)
-    gpu.fill(58, 29, 17, 5, " ")
-    gpu.setForeground(0)
-    gpu.set(61, 31, "Start game")
-end
-
-local function drawExitButton()
-    gpu.setBackground(0x990000)
-    gpu.fill(58, 35, 17, 3, " ")
-    gpu.setForeground(0xFFFFFF)
-    gpu.set(64, 36, "Exit")
-end
-
-local function clearScreen()
-    gpu.setBackground(0xe0e0e0) -- Set background to default gray
-    gpu.fill(1, 1, 80, 40, " ") -- Clear the entire screen
-end
-
-
-local function drawUI()
-    gpu.setBackground(0xe0e0e0)
-    gpu.fill(1, 1, 80, 40, " ")
-    drawBetButtons()
-    drawStartButton()
-    drawExitButton()
-    gpu.setForeground(0x000000)
-    gpu.set(5, 2, "Welcome to Mines!")
-    gpu.set(5, 4, "Rules:")
-    gpu.set(5, 5, "1. Select cells to uncover safe fields.")
-    gpu.set(5, 6, "2. Cash out anytime to keep your winnings.")
-    gpu.set(5, 7, "3. If you hit a mine, you lose your bet!")
-end
-
 local function handleFieldClick(row, col)
     if fields[row][col] == "safe" then
         fields[row][col] = "revealed"
@@ -130,18 +92,16 @@ local function handleFieldClick(row, col)
 end
 
 local function playGame()
-    clearScreen() -- Clear the entire screen before drawing the grid
+    clearScreen()
     fields = createBoard(BOARD_SIZE)
     placeMines(fields, mineCount)
     drawBoard(fields, false)
     drawCashOutButton()
-    gpu.setForeground(0x0000FF)
-    gpu.set(5, 35, "Game started! Good luck!")
-    local winnings = bets[bet]
 
+    local winnings = bets[bet]
     while game do
         local _, _, x, y = event.pull("touch")
-        if x >= 58 and x <= 75 and y >= 29 and y <= 33 then -- Cash Out button
+        if x >= 58 and x <= 75 and y >= 29 and y <= 33 then
             gpu.setForeground(0x00FF00)
             gpu.set(5, 36, string.format("You cashed out with %.2f!", winnings))
             game = false
@@ -162,14 +122,11 @@ local function playGame()
             end
         end
     end
-
-    drawEndButtons()
 end
-
 
 -- Main Game Loop
 gpu.setResolution(80, 40)
-drawUI()
+clearScreen()
 
 while true do
     local _, _, x, y = event.pull("touch")
@@ -201,4 +158,5 @@ while true do
             drawBetButtons()
         end
     end
+
 end
