@@ -35,6 +35,15 @@ local function createBoard(size)
     return board
 end
 
+local function drawBets()
+    gpu.setForeground(0)
+    for i = 0, #bets - 1 do
+        gpu.setBackground(i == bet - 1 and 0x90ef7e or 0xd0d0d0)
+        gpu.fill(5 + i * 7, 37, 5, 1, " ")
+        gpu.set(7 + i * 7, 37, tostring(bets[i + 1]))
+    end
+end
+
 local function placeMines(board, mineCount)
     local size = #board
     for _ = 1, mineCount do
@@ -47,16 +56,11 @@ local function placeMines(board, mineCount)
 end
 
 local function clearScreen()
-    gpu.setBackground(0xe0e0e0) -- Set background to default gray
-    gpu.fill(1, 1, 80, 40, " ") -- Clear the entire screen
+    gpu.setBackground(0xe0e0e0)
+    term.clear()
+    gpu.setBackground(0xffffff)
 end
 
-local function drawCashOutButton()
-    gpu.setBackground(0x90ef7e)
-    gpu.fill(58, 29, 17, 5, " ")
-    gpu.setForeground(0)
-    gpu.set(62, 31, "Cash Out")
-end
 
 local function endGame()
     os.sleep(0.7)
@@ -111,7 +115,6 @@ local function playGame()
     fields = createBoard(BOARD_SIZE)
     placeMines(fields, mineCount)
     drawBoard(fields, false)
-    drawCashOutButton()
 
     local winnings = bets[bet]
     while game do
@@ -141,16 +144,29 @@ end
 
 -- Main Game Loop
 gpu.setResolution(80, 40)
-clearScreen()
+animations.load()
+gpu.setBackground(0x90ef7e)
+gpu.setForeground(0)
+gpu.fill(58, 29, 17, 5, " ")
+gpu.set(61, 31, "Start game")
+
 
 while true do
     local _, _, x, y = event.pull("touch")
 
+    
     -- Start game button
     if not game and x >= 58 and x <= 75 and y >= 29 and y <= 33 then
         local payed, reason = casino.takeMoney(bets[bet])
         if payed then
             game = true
+            gpu.setBackground(0xffa500)
+            gpu.fill(58, 29, 17, 5, " ")
+            gpu.set(62, 31, "The game is on")
+            gpu.setForeground(0xFFFFFF)
+            gpu.setBackground(0x613C3C)
+            gpu.fill(58, 35, 17, 3, " ")
+            gpu.set(64, 36, "Cash Out")
             playGame()
         else
             gpu.setForeground(0xFF0000)
@@ -158,19 +174,17 @@ while true do
         end
     end
 
+
     -- Exit button
-    if x >= 58 and x <= 75 and y >= 35 and y <= 37 then
-        gpu.setForeground(0xFFFFFF)
-        gpu.set(5, 38, "Exiting...")
-        break
+    if not game and left >= 58 and left <= 75 and top >= 35 and top <= 37 then
+        error("Exit by request")
     end
 
     -- Bet buttons
-    if not game and y == 37 and x >= 5 and x <= 51 then
-        local newBet = math.floor((x - 5) / 7) + 1
-        if newBet >= 1 and newBet <= #bets then
-            bet = newBet
-            drawBetButtons()
+    if not game and top == 37 and left >= 5 and left <= 51 then
+        if (left - 5) % 7 < 5 then
+            bet = math.floor((left - 5) / 7) + 1
+            drawBets()
         end
     end
 
