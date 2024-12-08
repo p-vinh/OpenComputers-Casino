@@ -25,6 +25,23 @@ local field_types = {
     ["revealed"] = 0xffff00 -- Yellow
 }
 
+local function getBombPos(x)
+    return 5 + ((x - 1) % 6) * 12, 3 + math.floor((x - 1) / 6) * 6
+end
+
+local function drawField(x, f_type)
+    gpu.setBackground(field_types[f_type])
+    local pos_x, pos_y = getBombPos(x)
+    gpu.fill(pos_x, pos_y, 10, 5, " ")
+    if (f_type == "mine") then
+        gpu.setForeground(0)
+        gpu.set(pos_x, pos_y + 0, symb .. "      " .. symb)
+        gpu.set(pos_x, pos_y + 1, "  \\    /  ")
+        gpu.set(pos_x, pos_y + 2, "    " .. symb .. "    ")
+        gpu.set(pos_x, pos_y + 3, "  /    \\  ")
+        gpu.set(pos_x, pos_y + 4, symb .. "      " .. symb)
+    end
+end
 
 local animations = {
     ["load"] = function()
@@ -167,23 +184,7 @@ local function handleFieldClick(row, col)
     end
 end
 
-local function getBombPos(x)
-    return 5 + ((x - 1) % 6) * 12, 3 + math.floor((x - 1) / 6) * 6
-end
 
-local function drawField(x, f_type)
-    gpu.setBackground(field_types[f_type])
-    local pos_x, pos_y = getBombPos(x)
-    gpu.fill(pos_x, pos_y, 10, 5, " ")
-    if (f_type == "mine") then
-        gpu.setForeground(0)
-        gpu.set(pos_x, pos_y + 0, symb .. "      " .. symb)
-        gpu.set(pos_x, pos_y + 1, "  \\    /  ")
-        gpu.set(pos_x, pos_y + 2, "    " .. symb .. "    ")
-        gpu.set(pos_x, pos_y + 3, "  /    \\  ")
-        gpu.set(pos_x, pos_y + 4, symb .. "      " .. symb)
-    end
-end
 
 
 
@@ -260,7 +261,6 @@ while true do
                 gpu.set(5, 36, string.format("Safe! Current winnings: %.2f", winnings))
                 drawBoard(fields, false)
                 winnings = winnings * MULTIPLIERS[mineCount] or 1.1
-                -- Write the updated text
 
             end
         end
