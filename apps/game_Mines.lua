@@ -8,7 +8,7 @@ local casino = require("casino")
 math.randomseed(os.time()) -- Seed for randomness
 
 -- Constants
-local BOARD_SIZE = 5 -- 5x5 board
+local BOARD_SIZE = 4 -- 4x4 board
 local VALID_BETS = {1, 5, 10, 50, 100}
 local MULTIPLIERS = {
     [1] = 1.1, [5] = 1.5, [10] = 2.0, [15] = 3.0, [20] = 5.0, [24] = 10.0
@@ -48,7 +48,7 @@ end
 
 local animations = {
     ["load"] = function()
-        for i = 1, 25 do
+        for i = 1, 24 do
             drawField(i, "revealed")
             os.sleep()
             drawField(i, "safe")
@@ -57,26 +57,26 @@ local animations = {
 
     ["reveal"] = function()
         for i = 0, 3 do
-            for j = 1, 5 do
-                drawField(j + i * 5, "safe")
+            for j = 1, 4 do
+                drawField(j + i * 4, "safe")
             end
             os.sleep(0.1)
-            for j = 1, 5 do
-                if (fields[j + i * 5] == "mine") then
-                    drawField(j + i * 5, "mine")
+            for j = 1, 4 do
+                if (fields[j + i * 4] == "mine") then
+                    drawField(j + i * 4, "mine")
                 else
-                    drawField(j + i * 5, "safe")
+                    drawField(j + i * 4, "safe")
                 end
             end
         end
         os.sleep(1)
         for i = 0, 3 do
-            for j = 1, 5 do
-                drawField(j + i * 5, "safe")
+            for j = 1, 4 do
+                drawField(j + i * 4, "safe")
             end
             os.sleep(0.1)
-            for j = 1, 5 do
-                drawField(j + i * 5, "revealed")
+            for j = 1, 4 do
+                drawField(j + i * 4, "revealed")
             end
         end
     end,
@@ -236,7 +236,6 @@ while true do
             
             gpu.setBackground(0xffa500)
             gpu.fill(58, 35, 17, 3, " ")
-            gpu.setBackground(0x613C3C)
             gpu.setForeground(0xFFFFFF)
             gpu.fill(58, 35, 17, 3, " ")
             gpu.set(64, 36, "Cash Out")
