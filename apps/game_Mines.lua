@@ -9,7 +9,7 @@ math.randomseed(os.time()) -- Seed for randomness
 
 -- Constants
 local BOARD_SIZE = 4 -- 4x4 board
-local VALID_BETS = {1, 5, 10, 50, 100}
+local VALID_BETS = {1, 5, 10, 50, 100, 250, 500, 1000} -- Valid bets
 local MULTIPLIERS = {
     [1] = 1.5, [5] = 2.0, [10] = 3.0, [15] = 5.0, [16] = 10.0
 } -- Multiplier based on number of mines
@@ -145,8 +145,6 @@ local function endGame()
     gpu.fill(58, 29, 17, 5, " ")
     gpu.set(61, 31, "Start game")
     game = false
-    x = 0
-    y = 0
     casino.gameIsOver()
 end
 
@@ -173,7 +171,6 @@ end
 
 local function clearBetAndDescription()
     -- Clear the description area
-    gpu.setBackground(0xe0e0e0) -- Background color
     gpu.setForeground(0xffffff) -- Reset text color
     gpu.fill(3, 2, 74, 37, " ")  -- Adjust dimensions to fit the text area
 
@@ -199,7 +196,7 @@ local function handleFieldClick(row, col)
         fields[row][col] = "mine"
         drawBoard(fields, true)
         gpu.setForeground(0xFF0000)
-        gpu.set(5, 35, "Boom! You hit a mine. Game over.")
+        gpu.set(5, 36, "Boom! You hit a mine. Game over.")
         game = false
         animations.reveal()
     end
@@ -222,9 +219,9 @@ gpu.setForeground(0x00a000)
 gpu.set(4, 29, "Game rules and rewards:")
 gpu.set(4, 35, "Bid:")
 gpu.setForeground(0x000000)
-gpu.set(4, 30, "Start the game and look for fields without mines. Keep")
-gpu.set(4, 31, "going until you want to cash out.")
-gpu.set(4, 32, "There are 25 fields in the game, of which 1 is a")
+gpu.set(4, 30, "Start the game and look for fields without mines.")
+gpu.set(4, 31, " Keep going until you want to cash out.")
+gpu.set(4, 32, "There are 16 fields in the game, of which 1 is a")
 gpu.set(4, 33, "mine. Each safe field increases your winnings.")
 
 
