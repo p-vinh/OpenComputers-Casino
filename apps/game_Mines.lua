@@ -34,9 +34,13 @@ local animations = {
         for row = 1, BOARD_SIZE do
             for col = 1, BOARD_SIZE do
                 local cellIndex = (row - 1) * BOARD_SIZE + col
+                local x = 5 + (col - 1) * 12
+                local y = 3 + (row - 1) * 6
                 gpu.setBackground(field_types["revealed"]) -- Temporarily reveal the cell
+                gpu.fill(x, y, 10, 5, " ")
                 os.sleep(0.05) -- Short delay for smooth animation
                 gpu.setBackground(field_types["safe"]) -- Reset to safe
+                gpu.fill(x, y, 10, 5, " ")
             end
         end
     end,
@@ -44,16 +48,22 @@ local animations = {
         for row = 1, BOARD_SIZE do
             for col = 1, BOARD_SIZE do
                 local cellIndex = (row - 1) * BOARD_SIZE + col
+                local x = 5 + (col - 1) * 12
+                local y = 3 + (row - 1) * 6
                 gpu.setBackground(field_types["safe"]) -- Show the safe state first
+                gpu.fill(x, y, 10, 5, " ")
             end
             os.sleep(0.1) -- Short delay between rows
             for col = 1, BOARD_SIZE do
                 local cellIndex = (row - 1) * BOARD_SIZE + col
+                local x = 5 + (col - 1) * 12
+                local y = 3 + (row - 1) * 6
                 if fields[cellIndex] == "mine" then
                     gpu.setBackground(field_types["mine"]) -- Highlight the mine
                 else
                     gpu.setBackground(field_types["safe"]) -- Highlight the safe cell
                 end
+                gpu.fill(x, y, 10, 5, " ")
             end
         end
         os.sleep(1) -- Pause before resetting
@@ -62,7 +72,10 @@ local animations = {
         for row = 1, BOARD_SIZE do
             for col = 1, BOARD_SIZE do
                 local cellIndex = (row - 1) * BOARD_SIZE + col
+                local x = 5 + (col - 1) * 12
+                local y = 3 + (row - 1) * 6
                 gpu.setBackground(field_types["revealed"]) -- Final revealed state
+                gpu.fill(x, y, 10, 5, " ")
             end
             os.sleep(0.1) -- Short delay for smooth transition
         end
@@ -128,6 +141,7 @@ local function endGame()
     gpu.fill(58, 29, 17, 5, " ")
     gpu.set(61, 31, "Start game")
     game = false
+    winnings = 0
     casino.gameIsOver()
 end
 
@@ -172,6 +186,7 @@ local function handleFieldClick(row, col)
         gpu.setForeground(0xFF0000)
         gpu.set(5, 36, "Boom! You hit a mine. Game over.")
         game = false
+        winnings = 0
         animations.reveal()
     end
 end
@@ -231,7 +246,7 @@ while true do
             
             -- Clear the description and bet buttons
             gpu.setForeground(0xffffff)
-            gpu.fill(54, 27, 2, 12, " ")
+            gpu.fill(4, 54, 76, 12, " ")
 
             -- Generate game board
             fields = createBoard(BOARD_SIZE)
@@ -270,7 +285,6 @@ while true do
         end
 
         if x >= 58 and x <= 75 and y >= 35 and y <= 37 then
-            -- Confirm Cash Out
             gpu.setForeground(0x00FF00)
             gpu.set(5, 36, string.format("Nice! You cashed out with %.2f", winnings))
             endGame()
