@@ -238,6 +238,7 @@ while true do
             gpu.setBackground(0xffa500)
             gpu.fill(58, 35, 17, 3, " ")
             gpu.setBackground(0x613C3C)
+            gpu.setForeground(0xFFFFFF)
             gpu.fill(58, 35, 17, 3, " ")
             gpu.set(64, 36, "Cash Out")
             isCashOut = false
