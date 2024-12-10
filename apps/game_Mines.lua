@@ -48,7 +48,7 @@ end
 
 local animations = {
     ["load"] = function()
-        for i = 1, 24 do
+        for i = 1, 25 do
             drawField(i, "revealed")
             os.sleep()
             drawField(i, "safe")
@@ -57,26 +57,26 @@ local animations = {
 
     ["reveal"] = function()
         for i = 0, 3 do
-            for j = 1, 6 do
-                drawField(j + i * 6, "safe")
+            for j = 1, 5 do
+                drawField(j + i * 5, "safe")
             end
             os.sleep(0.1)
-            for j = 1, 6 do
-                if (fields[j + i * 6] == "mine") then
-                    drawField(j + i * 6, "mine")
+            for j = 1, 5 do
+                if (fields[j + i * 5] == "mine") then
+                    drawField(j + i * 5, "mine")
                 else
-                    drawField(j + i * 6, "safe")
+                    drawField(j + i * 5, "safe")
                 end
             end
         end
         os.sleep(1)
         for i = 0, 3 do
-            for j = 1, 6 do
-                drawField(j + i * 6, "safe")
+            for j = 1, 5 do
+                drawField(j + i * 5, "safe")
             end
             os.sleep(0.1)
-            for j = 1, 6 do
-                drawField(j + i * 6, "revealed")
+            for j = 1, 5 do
+                drawField(j + i * 5, "revealed")
             end
         end
     end,
@@ -234,7 +234,6 @@ while true do
             game = true
             term.clear()
             
-            drawBoard(fields, false)
             gpu.setBackground(0xffa500)
             gpu.fill(58, 35, 17, 3, " ")
             gpu.setBackground(0x613C3C)
@@ -242,6 +241,8 @@ while true do
             gpu.fill(58, 35, 17, 3, " ")
             gpu.set(64, 36, "Cash Out")
             isCashOut = false
+            drawBoard(fields, false)
+
         else
             gpu.setForeground(0xFF0000)
             gpu.set(5, 34, "Not enough money to start the game!")
