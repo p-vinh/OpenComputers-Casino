@@ -20,6 +20,8 @@ local bet = 1 -- Default bet index
 local mineCount = 1 -- Default mine count
 local game = false
 local fields = {} -- Game board
+local winnings = bets[bet]
+
 
 local field_types = {
     ["safe"] = 0x98df94, -- Green
@@ -185,10 +187,8 @@ local function handleFieldClick(row, col)
         gpu.setForeground(0xFF0000)
         gpu.set(5, 36, "Boom! You hit a mine. Game over.")
         game = false
-        winnings = 0
         animations.reveal()
         endGame()
-        return
     end
 end
 
@@ -234,7 +234,6 @@ gpu.set(61, 31, "Start game")
 -- Bet buttons
 drawBets()
 animations.load()
-local winnings = bets[bet]
 
 while true do
     local _, _, x, y = event.pull("touch")
