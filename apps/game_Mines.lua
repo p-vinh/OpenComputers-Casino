@@ -1,8 +1,8 @@
 local component = require("component")
 local gpu = component.gpu
-local symb = string.rep(unicode.char(0xE0BF), 2)
 local event = require("event")
 local term = require("term")
+local unicode = require("unicode")
 local casino = require("casino")
 
 math.randomseed(os.time()) -- Seed for randomness
@@ -13,6 +13,8 @@ local VALID_BETS = {1, 5, 10, 50, 100}
 local MULTIPLIERS = {
     [1] = 1.1, [5] = 1.5, [10] = 2.0, [15] = 3.0, [20] = 5.0, [24] = 10.0
 } -- Multiplier based on number of mines
+local symb = string.rep(unicode.char(0xE0BF), 2)
+
 local bets = VALID_BETS
 local bet = 1 -- Default bet index
 local mineCount = 1 -- Default mine count
@@ -67,7 +69,7 @@ local animations = {
                 end
             end
         end
-        os.sleep(2)
+        os.sleep(1)
         for i = 0, 3 do
             for j = 1, 6 do
                 drawField(j + i * 6, "safe")
