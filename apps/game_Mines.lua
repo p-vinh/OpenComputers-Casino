@@ -29,7 +29,7 @@ local field_types = {
 }
 
 local function getBombPos(x)
-    return 5 + ((x - 1) % 6) * 12, 3 + math.floor((x - 1) / 6) * 6
+    return 5 + ((x - 1) % BOARD_SIZE) * 12, 3 + math.floor((x - 1) / BOARD_SIZE) * 6
 end
 
 local function drawField(x, f_type)
@@ -48,36 +48,40 @@ end
 
 local animations = {
     ["load"] = function()
-        for i = 1, 24 do
-            drawField(i, "revealed")
-            os.sleep()
-            drawField(i, "safe")
+        for row = 1, BOARD_SIZE do
+            for col = 1, BOARD_SIZE do
+                local cellIndex = (row - 1) * BOARD_SIZE + col
+                drawField(cellIndex, "revealed") -- Temporarily reveal the cell
+                os.sleep(0.05) -- Short delay for smooth animation
+                drawField(cellIndex, "safe") -- Reset to safe
+            end
         end
     end,
-
     ["reveal"] = function()
-        for i = 0, 3 do
-            for j = 1, 4 do
-                drawField(j + i * 4, "safe")
+        for row = 1, BOARD_SIZE do
+            for col = 1, BOARD_SIZE do
+                local cellIndex = (row - 1) * BOARD_SIZE + col
+                drawField(cellIndex, "safe") -- Show the safe state first
             end
-            os.sleep(0.1)
-            for j = 1, 4 do
-                if (fields[j + i * 4] == "mine") then
-                    drawField(j + i * 4, "mine")
+            os.sleep(0.1) -- Short delay between rows
+            for col = 1, BOARD_SIZE do
+                local cellIndex = (row - 1) * BOARD_SIZE + col
+                if fields[cellIndex] == "mine" then
+                    drawField(cellIndex, "mine") -- Highlight the mine
                 else
-                    drawField(j + i * 4, "safe")
+                    drawField(cellIndex, "safe") -- Highlight the safe cell
                 end
             end
         end
-        os.sleep(1)
-        for i = 0, 3 do
-            for j = 1, 4 do
-                drawField(j + i * 4, "safe")
+        os.sleep(1) -- Pause before resetting
+
+        -- Reset the grid to the final revealed state
+        for row = 1, BOARD_SIZE do
+            for col = 1, BOARD_SIZE do
+                local cellIndex = (row - 1) * BOARD_SIZE + col
+                drawField(cellIndex, "revealed") -- Final revealed state
             end
-            os.sleep(0.1)
-            for j = 1, 4 do
-                drawField(j + i * 4, "revealed")
-            end
+            os.sleep(0.1) -- Short delay for smooth transition
         end
     end,
     ["error"] = function()
@@ -141,6 +145,8 @@ local function endGame()
     gpu.fill(58, 29, 17, 5, " ")
     gpu.set(61, 31, "Start game")
     game = false
+    x = 0
+    y = 0
     casino.gameIsOver()
 end
 
