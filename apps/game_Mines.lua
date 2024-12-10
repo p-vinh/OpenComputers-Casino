@@ -142,7 +142,7 @@ local function endGame()
     gpu.fill(58, 29, 17, 5, " ")
     gpu.set(61, 31, "Start game")
     game = false
-    winnings = 0
+    winnings = bets[bet]
     casino.gameIsOver()
 end
 
