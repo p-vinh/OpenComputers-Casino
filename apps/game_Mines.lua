@@ -1,5 +1,6 @@
 local component = require("component")
 local gpu = component.gpu
+local symb = string.rep(unicode.char(0xE0BF), 2)
 local event = require("event")
 local term = require("term")
 local casino = require("casino")
