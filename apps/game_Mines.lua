@@ -9,7 +9,7 @@ math.randomseed(os.time()) -- Seed for randomness
 
 -- Constants
 local BOARD_SIZE = 4 -- 4x4 board
-local VALID_BETS = {1, 5, 10, 50, 100, 250, 500, 1000} -- Valid bets
+local VALID_BETS = {1, 5, 10, 50, 100, 250, 500} -- Valid bets
 local MULTIPLIERS = {
     [1] = 1.5, [5] = 2.0, [10] = 3.0, [15] = 5.0, [16] = 10.0
 } -- Multiplier based on number of mines
@@ -28,32 +28,15 @@ local field_types = {
     ["revealed"] = 0xffff00 -- Yellow
 }
 
-local function getBombPos(x)
-    return 5 + ((x - 1) % BOARD_SIZE) * 12, 3 + math.floor((x - 1) / BOARD_SIZE) * 6
-end
-
-local function drawField(x, f_type)
-    gpu.setBackground(field_types[f_type])
-    local pos_x, pos_y = getBombPos(x)
-    gpu.fill(pos_x, pos_y, 10, 5, " ")
-    if (f_type == "mine") then
-        gpu.setForeground(0)
-        gpu.set(pos_x, pos_y + 0, symb .. "      " .. symb)
-        gpu.set(pos_x, pos_y + 1, "  \\    /  ")
-        gpu.set(pos_x, pos_y + 2, "    " .. symb .. "    ")
-        gpu.set(pos_x, pos_y + 3, "  /    \\  ")
-        gpu.set(pos_x, pos_y + 4, symb .. "      " .. symb)
-    end
-end
 
 local animations = {
     ["load"] = function()
         for row = 1, BOARD_SIZE do
             for col = 1, BOARD_SIZE do
                 local cellIndex = (row - 1) * BOARD_SIZE + col
-                drawField(cellIndex, "revealed") -- Temporarily reveal the cell
+                gpu.setBackground(field_types["revealed"]) -- Temporarily reveal the cell
                 os.sleep(0.05) -- Short delay for smooth animation
-                drawField(cellIndex, "safe") -- Reset to safe
+                gpu.setBackground(field_types["safe"]) -- Reset to safe
             end
         end
     end,
@@ -61,15 +44,15 @@ local animations = {
         for row = 1, BOARD_SIZE do
             for col = 1, BOARD_SIZE do
                 local cellIndex = (row - 1) * BOARD_SIZE + col
-                drawField(cellIndex, "safe") -- Show the safe state first
+                gpu.setBackground(field_types["safe"]) -- Show the safe state first
             end
             os.sleep(0.1) -- Short delay between rows
             for col = 1, BOARD_SIZE do
                 local cellIndex = (row - 1) * BOARD_SIZE + col
                 if fields[cellIndex] == "mine" then
-                    drawField(cellIndex, "mine") -- Highlight the mine
+                    gpu.setBackground(field_types["mine"]) -- Highlight the mine
                 else
-                    drawField(cellIndex, "safe") -- Highlight the safe cell
+                    gpu.setBackground(field_types["safe"]) -- Highlight the safe cell
                 end
             end
         end
@@ -79,7 +62,7 @@ local animations = {
         for row = 1, BOARD_SIZE do
             for col = 1, BOARD_SIZE do
                 local cellIndex = (row - 1) * BOARD_SIZE + col
-                drawField(cellIndex, "revealed") -- Final revealed state
+                gpu.setBackground(field_types["revealed"]) -- Final revealed state
             end
             os.sleep(0.1) -- Short delay for smooth transition
         end
@@ -169,15 +152,6 @@ local function drawBoard(board, reveal)
 end
 
 
-local function clearBetAndDescription()
-    -- Clear the description area
-    gpu.setForeground(0xffffff) -- Reset text color
-    gpu.fill(3, 2, 74, 37, " ")  -- Adjust dimensions to fit the text area
-
-    -- Clear the bet buttons area
-    gpu.fill(5, 37, 35, 1, " ") -- Adjust width and position as needed
-end
-
 
 local function getBombId(left, top)
     if (((left - 3) % 12) == 0) or (((left - 4) % 12) == 0) or (((top - 2) % 6) == 0) then
@@ -256,7 +230,8 @@ while true do
         if payed then
             
             -- Clear the description and bet buttons
-            clearBetAndDescription()
+            gpu.setForeground(0xffffff)
+            gpu.fill(54, 27, 2, 12, " ")
 
             -- Generate game board
             fields = createBoard(BOARD_SIZE)
