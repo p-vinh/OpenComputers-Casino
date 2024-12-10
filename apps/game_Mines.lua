@@ -11,7 +11,7 @@ math.randomseed(os.time()) -- Seed for randomness
 local BOARD_SIZE = 4 -- 4x4 board
 local VALID_BETS = {1, 5, 10, 50, 100}
 local MULTIPLIERS = {
-    [1] = 1.1, [5] = 1.5, [10] = 2.0, [15] = 3.0, [20] = 5.0, [24] = 10.0
+    [1] = 1.5, [5] = 2.0, [10] = 3.0, [15] = 5.0, [16] = 10.0
 } -- Multiplier based on number of mines
 local symb = string.rep(unicode.char(0xE0BF), 2)
 
@@ -262,23 +262,18 @@ while true do
             elseif fields[row][col] == "safe" then
                 fields[row][col] = "revealed"
                 gpu.setForeground(0x0000FF)
-                gpu.set(5, 36, string.format("Safe! Current winnings: %.2f", winnings))
                 drawBoard(fields, false)
-                winnings = winnings * MULTIPLIERS[mineCount] or 1.1
+                winnings = winnings * (MULTIPLIERS[mineCount] or 1.5)
+                gpu.set(5, 36, string.format("Safe! Current winnings: %.2f", winnings))
 
             end
         end
 
         if x >= 58 and x <= 75 and y >= 35 and y <= 37 then
-            if not isCashOut then
-                isCashOut = true
-            else
-                -- Confirm Cash Out
-                gpu.setForeground(0x00FF00)
-                gpu.set(5, 36, string.format("You cashed out with %.2f!", winnings))
-                gpu.fill(58, 35, 17, 3, " ")
-                endGame()
-            end
+            -- Confirm Cash Out
+            gpu.setForeground(0x00FF00)
+            gpu.set(5, 36, string.format("You cashed out with %.2f!", winnings))
+            endGame()
         end
 
     end
