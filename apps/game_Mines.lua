@@ -189,7 +189,7 @@ local function handleFieldClick(row, col)
         gpu.setForeground(0xFF0000)
         gpu.set(5, 35, "Boom! You hit a mine. Game over.")
         game = false
-        animation.reveal()
+        animations.reveal()
     end
 end
 
@@ -238,7 +238,6 @@ while true do
             fields = createBoard(BOARD_SIZE)
             placeMines(fields, mineCount)
             game = true
-            term.clear()
             
             gpu.setBackground(0xffa500)
             gpu.fill(58, 35, 17, 3, " ")
