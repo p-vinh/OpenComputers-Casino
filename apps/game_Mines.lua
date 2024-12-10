@@ -174,8 +174,8 @@ end
 local function clearBetAndDescription()
     -- Clear the description area
     gpu.setBackground(0xe0e0e0) -- Background color
-    gpu.setForeground(0x000000) -- Reset text color
-    gpu.fill(4, 29, 70, 6, " ") -- Adjust dimensions to fit the text area
+    gpu.setForeground(0xffffff) -- Reset text color
+    gpu.fill(3, 2, 74, 37, " ")  -- Adjust dimensions to fit the text area
 
     -- Clear the bet buttons area
     gpu.fill(5, 37, 35, 1, " ") -- Adjust width and position as needed
@@ -247,6 +247,7 @@ gpu.set(61, 31, "Start game")
 -- Bet buttons
 drawBets()
 animations.load()
+local winnings = bets[bet]
 
 while true do
     local _, _, x, y = event.pull("touch")
@@ -259,7 +260,7 @@ while true do
             
             -- Clear the description and bet buttons
             clearBetAndDescription()
-            
+
             -- Generate game board
             fields = createBoard(BOARD_SIZE)
             placeMines(fields, mineCount)
@@ -281,10 +282,6 @@ while true do
 
     -- Game fields click
     if game then
-        local winnings = bets[bet]
-
-
-
         local col = math.floor((x - 5) / 12) + 1
         local row = math.floor((y - 3) / 6) + 1
         if row >= 1 and row <= BOARD_SIZE and col >= 1 and col <= BOARD_SIZE then
@@ -303,7 +300,7 @@ while true do
         if x >= 58 and x <= 75 and y >= 35 and y <= 37 then
             -- Confirm Cash Out
             gpu.setForeground(0x00FF00)
-            gpu.set(5, 36, string.format("You cashed out with %.2f!", winnings))
+            gpu.set(5, 36, string.format("Nice! You cashed out with %.2f", winnings))
             endGame()
         end
 
