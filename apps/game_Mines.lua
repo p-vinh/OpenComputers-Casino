@@ -20,7 +20,6 @@ local bet = 1 -- Default bet index
 local mineCount = 1 -- Default mine count
 local game = false
 local fields = {} -- Game board
-local isCashOut = false -- Cash out flag
 
 local field_types = {
     ["safe"] = 0x98df94, -- Green
@@ -258,7 +257,6 @@ while true do
             gpu.setForeground(0xFFFFFF)
             gpu.fill(58, 35, 17, 3, " ")
             gpu.set(64, 36, "Cash Out")
-            isCashOut = false
             drawBoard(fields, false)
 
         else
@@ -301,6 +299,7 @@ while true do
     if not game and y == 37 and x >= 5 and x <= 51 then
         if (x - 5) % 7 < 5 then
             bet = math.floor((x - 5) / 7) + 1
+            winnings = bets[bet]
             drawBets()
         end
     end
