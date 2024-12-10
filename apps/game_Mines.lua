@@ -187,6 +187,8 @@ local function handleFieldClick(row, col)
         game = false
         winnings = 0
         animations.reveal()
+        endGame()
+        return
     end
 end
 
