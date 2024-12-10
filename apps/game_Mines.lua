@@ -151,7 +151,7 @@ local function endGame()
 end
 
 local function drawBoard(board, reveal)
-    gpu.setBackground(0xe0e0e0)
+    gpu.setBackground(0xffffff)
     gpu.fill(5, 3, BOARD_SIZE * 12, BOARD_SIZE * 6, " ") -- Clear grid area
 
     for row = 1, BOARD_SIZE do
@@ -169,6 +169,18 @@ local function drawBoard(board, reveal)
         end
     end
 end
+
+
+local function clearBetAndDescription()
+    -- Clear the description area
+    gpu.setBackground(0xe0e0e0) -- Background color
+    gpu.setForeground(0x000000) -- Reset text color
+    gpu.fill(4, 29, 70, 6, " ") -- Adjust dimensions to fit the text area
+
+    -- Clear the bet buttons area
+    gpu.fill(5, 37, 35, 1, " ") -- Adjust width and position as needed
+end
+
 
 local function getBombId(left, top)
     if (((left - 3) % 12) == 0) or (((left - 4) % 12) == 0) or (((top - 2) % 6) == 0) then
@@ -204,6 +216,8 @@ gpu.setBackground(0xe0e0e0)
 term.clear()
 gpu.setBackground(0xffffff)
 gpu.fill(3, 2, 74, 37, " ")
+
+
 gpu.setForeground(0x00a000)
 gpu.set(4, 29, "Game rules and rewards:")
 gpu.set(4, 35, "Bid:")
@@ -212,17 +226,25 @@ gpu.set(4, 30, "Start the game and look for fields without mines. Keep")
 gpu.set(4, 31, "going until you want to cash out.")
 gpu.set(4, 32, "There are 25 fields in the game, of which 1 is a")
 gpu.set(4, 33, "mine. Each safe field increases your winnings.")
+
+
 gpu.setBackground(0xe0e0e0)
 gpu.fill(1, 27, 76, 1, " ")
 gpu.fill(54, 27, 2, 12, " ")
+
+-- Exit button
 gpu.setForeground(0xFFFFFF)
 gpu.setBackground(0x990000)
 gpu.fill(58, 35, 17, 3, " ")
 gpu.set(64, 36, "Exit")
+
+-- Start game button
 gpu.setBackground(0x90ef7e)
 gpu.setForeground(0)
 gpu.fill(58, 29, 17, 5, " ")
 gpu.set(61, 31, "Start game")
+
+-- Bet buttons
 drawBets()
 animations.load()
 
@@ -234,6 +256,10 @@ while true do
     if not game and x >= 58 and x <= 75 and y >= 29 and y <= 33 then
         local payed, reason = casino.takeMoney(bets[bet])
         if payed then
+            
+            -- Clear the description and bet buttons
+            clearBetAndDescription()
+            
             -- Generate game board
             fields = createBoard(BOARD_SIZE)
             placeMines(fields, mineCount)
